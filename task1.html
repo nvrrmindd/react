@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Task 0 - JavaScript Refresher</title>
+<style>
+  body {
+    background: black;
+    color: white;
+    font-size: 16px;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    margin-top: 40px;
+  }
+  .code {
+    border: 1px solid gray;
+    padding: 10px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .output {
+    border: 1px solid gray;
+    padding: 10px;
+    white-space: pre-wrap;
+    margin-top: 5px;
+  }
+  p {
+    max-width: 700px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Task 0 - JavaScript Refresher</h1>
+
+<h2>1. Variables and Data Types</h2>
+<div class="code">
+const student = {
+  name: "Aidana",
+  age: 20,
+  isActive: true,
+  courses: ["Math", "CS101", "Physics"],
+  address: { city: "Almaty", street: "Abay Ave" }
+};
+
+let emptyValue = null;
+let notSet;
+
+const sentence = `${student.name} is ${student.age} years old and lives in ${student.address.city}.`;
+</div>
+<div class="output" id="out1"></div>
+<p>let vs const: const can't be reassigned, let can. Neither works before its line runs.</p>
+<p>typeof null: returns "object". It's an old bug in JS that never got fixed.</p>
+<p>Primitive types: string, number, boolean, null, undefined, bigint, symbol.</p>
+
+<h2>2. Arrays</h2>
+<div class="code">
+const nums = [3, 7, 2, 10, 5];
+
+const doubled = nums.map(n => n * 2);
+const above5 = nums.filter(n => n > 5);
+const firstBig = nums.find(n => n > 5);
+const sum = nums.reduce((acc, n) => acc + n, 0);
+const has10 = nums.includes(10);
+</div>
+<div class="output" id="out2"></div>
+<p>None of these change the original array, they all return new values.</p>
+
+<h2>3. Arrays of Objects</h2>
+<div class="code">
+const students = [
+  { id: 1, name: "Alya", grade: 85 },
+  { id: 2, name: "Altyn", grade: 62 },
+  { id: 3, name: "Madina", grade: 91 },
+  { id: 4, name: "Serik", grade: 55 }
+];
+
+const passing = students.filter(s => s.grade >= 70);
+const names = students.map(s => s.name);
+const byId3 = students.find(s => s.id === 3);
+const top = students.reduce((a, b) => a.grade > b.grade ? a : b);
+const average = students.reduce((sum, s) => sum + s.grade, 0) / students.length;
+const withPass = students.map(s => ({ ...s, passed: s.grade >= 70 }));
+</div>
+<div class="output" id="out3"></div>
+<p>withPass uses spread to build new objects instead of mutating the originals.</p>
+
+<h2>4. Objects</h2>
+<div class="code">
+const user = {
+  id: 1,
+  name: "Nazyken",
+  age: 20,
+  address: { city: "Almaty", street: "Dostyk" }
+};
+
+user.age = 21;
+user.email = "nazyken@gmail.com";
+delete user.address.street;
+
+const { name, age } = user;
+const { address: { city } } = user;
+const { name: userName } = user;
+</div>
+<div class="output" id="out4"></div>
+
+<h2>5. Values and References</h2>
+<div class="code">
+const original = { name: "Janerke", score: 10 };
+const copy = original;
+copy.score = 99;
+// original.score also becomes 99, same object in memory
+
+const realCopy = { ...original };
+realCopy.score = 50;
+// original stays the same this time, spread makes a new object
+
+const user = { name: "Janerke", address: { city: "Almaty" } };
+const shallow = { ...user };
+shallow.address.city = "Astana";
+// user.address.city changes too, spread only copies one level deep
+
+const deep = { ...user, address: { ...user.address } };
+</div>
+<div class="output" id="out5"></div>
+<p>copy.score changes original because objects are copied by reference, not by value.</p>
+<p>Spread only copies the top level. The nested address object is still shared unless you spread it too.</p>
+
+<h2>6. Functions</h2>
+<div class="code">
+function isEven(n) { return n % 2 === 0; }
+const isEvenArrow = n => n % 2 === 0;
+
+function getFullName(first, last) { return `${first} ${last}`; }
+const calculatePrice = (price, qty) => price * qty;
+const calculateDiscount = (price, pct) => price - (price * pct) / 100;
+const getMax = (a, b) => a > b ? a : b;
+</div>
+<div class="output" id="out6"></div>
+
+<h2>7. Functions as Values</h2>
+<div class="code">
+const add = (a, b) => a + b;
+const multiply = (a, b) => a * b;
+
+function calculate(a, b, operation) {
+  return operation(a, b);
+}
+
+calculate(5, 3, add);      // 8
+calculate(5, 3, multiply); // 15
+</div>
+<div class="output" id="out7"></div>
+<p>Functions can be stored in variables and passed to other functions like any other value.</p>
+<p>add is the function itself, add() calls it and gives back the result.</p>
+
+<h2>8. Scope</h2>
+<div class="code">
+const message = "global";
+
+function scopeDemo() {
+  let message = "function";
+  if (true) {
+    let message = "block";
+  }
+}
+</div>
+<div class="output" id="out8"></div>
+<p>Global scope is visible everywhere. Function scope is visible only inside that function. Block scope is visible only inside its { }.</p>
+<p>var ignores blocks and leaks out of them. let and const stay inside the block they were declared in.</p>
+
+<h2>9. Closure</h2>
+<div class="code">
+function createCounter() {
+  let count = 0;
+  return () => ++count;
+}
+
+const counterA = createCounter();
+const counterB = createCounter();
+
+function createAdder(value) {
+  return n => n + value;
+}
+const addFive = createAdder(5);
+</div>
+<div class="output" id="out9"></div>
+<p>The inner function keeps access to variables from where it was created, even after the outer function finished running. That's a closure.</p>
+
+<h2>10. Destructuring, Spread and Rest</h2>
+<div class="code">
+const numbers = [10, 20, 30, 40];
+const [first, second] = numbers;
+
+const user = { id: 1, name: "Anna", age: 21 };
+const { name, age } = user;
+
+const withExtra = [...numbers, 50];
+const olderUser = { ...user, age: 22 };
+const userWithEmail = { ...user, email: "anna@example.com" };
+const combined = [...numbers, ...[1, 2, 3]];
+
+const sum = (...nums) => nums.reduce((a, b) => a + b, 0);
+sum(1, 2);       // 3
+sum(1, 2, 3, 4); // 10
+</div>
+<div class="output" id="out10"></div>
+<p>Spread expands a collection into separate items. Rest does the opposite, it gathers separate arguments into one array.</p>
+
+<h2>11. Optional Chaining and Default Values</h2>
+<div class="code">
+const userA = { name: "Magzhan", address: { city: "Almaty" } };
+const userB = { name: "Dana" };
+
+userB.address?.city;
+userB.address?.city ?? "City not specified";
+</div>
+<div class="output" id="out11"></div>
+<div class="output" id="out11b"></div>
+<p>|| replaces any falsy value, even valid ones like 0 or "". ?? only replaces null or undefined, which is usually what you actually want.</p>
+
+<h2>Final Task</h2>
+<div class="code">
+const students = [
+  { id: 1, name: "Alya", age: 20, grades: [90, 85, 88] },
+  { id: 2, name: "Altyn", age: 21, grades: [55, 60, 58] },
+  { id: 3, name: "Madina", age: 19, grades: [92, 95, 89] },
+  { id: 4, name: "Serik", age: 22, grades: [40, 50, 45] },
+  { id: 5, name: "Dana", age: 20, grades: [70, 72, 75] }
+];
+
+const getAverage = grades => grades.reduce((a, b) => a + b, 0) / grades.length;
+const getStudentAverage = student => getAverage(student.grades);
+const getPassedStudents = students => students.filter(s => getStudentAverage(s) >= 60);
+const getStudentNames = students => students.map(s => s.name);
+const findStudent = (students, id) => students.find(s => s.id === id);
+const getTopStudent = students =>
+  students.reduce((top, s) => getStudentAverage(s) > getStudentAverage(top) ? s : top);
+
+const report = students.map(({ id, name, grades }) => ({
+  id,
+  name,
+  average: Number(getAverage(grades).toFixed(1)),
+  passed: getAverage(grades) >= 60
+}));
+</div>
+<div class="output" id="outf"></div>
+
+<script>
+function log(id, lines) {
+  document.getElementById(id).textContent = lines.join("\n");
+}
+function j(v) {
+  return JSON.stringify(v);
+}
+
+// 1
+(function() {
+  const student = {
+    name: "Aidana", age: 20, isActive: true,
+    courses: ["Math", "CS101", "Physics"],
+    address: { city: "Almaty", street: "Abay Ave" }
+  };
+  let emptyValue = null;
+  let notSet;
+  const sentence = `${student.name} is ${student.age} years old and lives in ${student.address.city}.`;
+  log("out1", [
+    "name: " + student.name + " (" + typeof student.name + ")",
+    "age: " + student.age + " (" + typeof student.age + ")",
+    "isActive: " + student.isActive + " (" + typeof student.isActive + ")",
+    "courses: " + j(student.courses) + " (object, reference)",
+    "address: " + j(student.address) + " (object, reference)",
+    "emptyValue: " + emptyValue + " (typeof: " + typeof emptyValue + ")",
+    "notSet: " + notSet + " (typeof: " + typeof notSet + ")",
+    "sentence: " + sentence
+  ]);
+})();
+
+// 2
+(function() {
+  const nums = [3, 7, 2, 10, 5];
+  const doubled = nums.map(n => n * 2);
+  const above5 = nums.filter(n => n > 5);
+  const firstBig = nums.find(n => n > 5);
+  const sum = nums.reduce((acc, n) => acc + n, 0);
+  const has10 = nums.includes(10);
+  log("out2", [
+    "doubled: " + j(doubled),
+    "above5: " + j(above5),
+    "firstBig: " + firstBig,
+    "sum: " + sum,
+    "has10: " + has10,
+    "original array unchanged: " + j(nums)
+  ]);
+})();
+
+// 3
+(function() {
+  const students = [
+    { id: 1, name: "Alya", grade: 85 },
+    { id: 2, name: "John", grade: 62 },
+    { id: 3, name: "Sara", grade: 91 },
+    { id: 4, name: "Mike", grade: 55 }
+  ];
+  const passing = students.filter(s => s.grade >= 70);
+  const names = students.map(s => s.name);
+  const byId3 = students.find(s => s.id === 3);
+  const top = students.reduce((a, b) => a.grade > b.grade ? a : b);
+  const average = students.reduce((sum, s) => sum + s.grade, 0) / students.length;
+  const withPass = students.map(s => ({ ...s, passed: s.grade >= 70 }));
+  log("out3", [
+    "passing: " + j(passing.map(s => s.name)),
+    "names: " + j(names),
+    "id=3: " + j(byId3),
+    "top: " + top.name + " (" + top.grade + ")",
+    "average: " + average.toFixed(1),
+    "withPass: " + j(withPass)
+  ]);
+})();
+
+// 4
+(function() {
+  const user = {
+    id: 1, name: "Nazyken", age: 21,
+    address: { city: "Almaty", street: "Dostyk" }
+  };
+  const readName = user.name;
+  const readCity = user.address.city;
+  user.age = 22;
+  user.email = "nazyken@example.com";
+  delete user.address.street;
+  const { name, age } = user;
+  const { address: { city } } = user;
+  const { name: userName } = user;
+  log("out4", [
+    "read: name=" + readName + ", city=" + readCity,
+    "after edits: " + j(user),
+    "destructured: name=" + name + ", age=" + age,
+    "nested destructured city: " + city,
+    "renamed destructured userName: " + userName
+  ]);
+})();
+
+// 5
+(function() {
+  const original = { name: "Alice", score: 10 };
+  const copy = original;
+  copy.score = 99;
+
+  const original2 = { name: "Alice", score: 10 };
+  const realCopy = { ...original2 };
+  realCopy.score = 50;
+
+  const user = { name: "Alice", address: { city: "Almaty" } };
+  const shallow = { ...user };
+  shallow.address.city = "Astana";
+
+  const user2 = { name: "Alice", address: { city: "Almaty" } };
+  const deep = { ...user2, address: { ...user2.address } };
+  deep.address.city = "Astana";
+
+  log("out5", [
+    "copy.score = 99, original.score is now: " + original.score,
+    "realCopy.score = 50, original2.score stays: " + original2.score,
+    "shallow.address.city changed, user.address.city is now: " + user.address.city,
+    "deep.address.city changed, user2.address.city stays: " + user2.address.city
+  ]);
+})();
+
+// 6
+(function() {
+  function isEven(n) { return n % 2 === 0; }
+  const isEvenArrow = n => n % 2 === 0;
+  function getFullName(first, last) { return first + " " + last; }
+  const calculatePrice = (price, qty) => price * qty;
+  const calculateDiscount = (price, pct) => price - (price * pct) / 100;
+  const getMax = (a, b) => a > b ? a : b;
+  log("out6", [
+    "isEven(4): " + isEven(4) + ", isEvenArrow(7): " + isEvenArrow(7),
+    "getFullName: " + getFullName("Ali", "Nur"),
+    "calculatePrice(1500, 3): " + calculatePrice(1500, 3),
+    "calculateDiscount(1500, 10): " + calculateDiscount(1500, 10),
+    "getMax(4, 9): " + getMax(4, 9)
+  ]);
+})();
+
+// 7
+(function() {
+  const add = (a, b) => a + b;
+  const multiply = (a, b) => a * b;
+  function calculate(a, b, operation) { return operation(a, b); }
+  log("out7", [
+    "calculate(5, 3, add): " + calculate(5, 3, add),
+    "calculate(5, 3, multiply): " + calculate(5, 3, multiply),
+    "typeof add: " + typeof add,
+    "typeof add(1,2): " + typeof add(1, 2)
+  ]);
+})();
+
+// 8
+(function() {
+  const message = "global";
+  const trace = [];
+  function scopeDemo() {
+    let message = "function";
+    trace.push("inside function: " + message);
+    if (true) {
+      let message = "block";
+      trace.push("inside block: " + message);
+    }
+    trace.push("back in function: " + message);
+  }
+  scopeDemo();
+  trace.unshift("top level: " + message);
+
+  { var v = "var-leaks-out"; let l = "let-stays-in-block"; }
+  const varAfter = (typeof v !== "undefined") ? v : "not accessible";
+  const letAfter = (typeof l !== "undefined") ? l : "not accessible outside block";
+
+  log("out8", trace.concat([
+    "var after its block: " + varAfter,
+    "let after its block: " + letAfter
+  ]));
+})();
+
+// 9
+(function() {
+  function createCounter() {
+    let count = 0;
+    return () => ++count;
+  }
+  const counterA = createCounter();
+  const counterB = createCounter();
+  const a1 = counterA(), a2 = counterA(), a3 = counterA();
+  const b1 = counterB();
+
+  function createAdder(value) { return n => n + value; }
+  const addFive = createAdder(5);
+
+  log("out9", [
+    "counterA(): " + a1 + ", " + a2 + ", " + a3,
+    "counterB(): " + b1 + " (separate state)",
+    "addFive(10): " + addFive(10),
+    "addFive(20): " + addFive(20)
+  ]);
+})();
+
+// 10
+(function() {
+  const numbers = [10, 20, 30, 40];
+  const [first, second] = numbers;
+  const user = { id: 1, name: "Anna", age: 21 };
+  const { name, age } = user;
+  const withExtra = [...numbers, 50];
+  const olderUser = { ...user, age: 22 };
+  const userWithEmail = { ...user, email: "anna@example.com" };
+  const combined = [...numbers, ...[1, 2, 3]];
+  const sum = (...nums) => nums.reduce((a, b) => a + b, 0);
+  log("out10", [
+    "first, second: " + first + ", " + second,
+    "name, age: " + name + ", " + age,
+    "withExtra: " + j(withExtra) + " (numbers unchanged: " + j(numbers) + ")",
+    "olderUser: " + j(olderUser) + " (user unchanged: " + j(user) + ")",
+    "userWithEmail: " + j(userWithEmail),
+    "combined: " + j(combined),
+    "sum(1,2): " + sum(1, 2) + ", sum(1,2,3,4): " + sum(1, 2, 3, 4)
+  ]);
+})();
+
+// 11
+(function() {
+  const userB = { name: "Bob" };
+  let crashed = false;
+  try { const x = userB.address.city; } catch (e) { crashed = true; }
+  const safe = userB.address?.city;
+  const withDefault = userB.address?.city ?? "City not specified";
+  log("out11", [
+    "userB.address.city without chaining throws: " + crashed,
+    "userB.address?.city: " + safe,
+    "userB.address?.city ?? default: " + withDefault
+  ]);
+
+  const values = [0, "", false, null, undefined];
+  const orResults = values.map(v => j(v) + " || fallback -> " + j(v || "fallback"));
+  const nullishResults = values.map(v => j(v) + " ?? fallback -> " + j(v ?? "fallback"));
+  log("out11b", orResults.concat([""]).concat(nullishResults));
+})();
+
+// Final
+(function() {
+  const students = [
+    { id: 1, name: "Alya", age: 20, grades: [90, 85, 88] },
+    { id: 2, name: "Altyn", age: 21, grades: [55, 60, 58] },
+    { id: 3, name: "Madina", age: 19, grades: [92, 95, 89] },
+    { id: 4, name: "Serik", age: 22, grades: [40, 50, 45] },
+    { id: 5, name: "Dana", age: 20, grades: [70, 72, 75] }
+  ];
+  const getAverage = grades => grades.reduce((a, b) => a + b, 0) / grades.length;
+  const getStudentAverage = student => getAverage(student.grades);
+  const getPassedStudents = students => students.filter(s => getStudentAverage(s) >= 60);
+  const getStudentNames = students => students.map(s => s.name);
+  const findStudent = (students, id) => students.find(s => s.id === id);
+  const getTopStudent = students =>
+    students.reduce((top, s) => getStudentAverage(s) > getStudentAverage(top) ? s : top);
+
+  const report = students.map(({ id, name, grades }) => ({
+    id, name,
+    average: Number(getAverage(grades).toFixed(1)),
+    passed: getAverage(grades) >= 60
+  }));
+
+  log("outf", [
+    "passed: " + j(getPassedStudents(students).map(s => s.name)),
+    "names: " + j(getStudentNames(students)),
+    "find id=3: " + findStudent(students, 3).name,
+    "top: " + getTopStudent(students).name,
+    "report:"
+  ].concat(report.map(r => "  " + j(r))));
+})();
+</script>
+
+</body>
+</html>
