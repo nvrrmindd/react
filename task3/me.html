@@ -49,7 +49,7 @@
     }
     .hero-panel { min-width: 0; }
     .hero-panel .character-line { margin-top: 0; }
-    .hero-tabs { display: flex; gap: 0; margin: 28px 0 0; border-bottom: 1px solid var(--line); }
+    .hero-tabs { display: flex; margin: 28px 0 0; border-bottom: 1px solid var(--line); }
     .hero-tabs span { padding: 12px 18px; color: var(--muted); font-family: 'Orbitron', sans-serif; font-size: .68rem; letter-spacing: .1em; }
     .hero-tabs span.active { color: var(--ink); border-bottom: 2px solid var(--blue); background: rgba(98, 183, 255, .1); }
     .profile-panel { display: grid; grid-template-columns: 1fr 1.25fr; gap: 22px; margin-top: 18px; padding: 18px; border: 1px solid var(--line); background: rgba(18, 22, 28, .8); }
@@ -59,6 +59,8 @@
     .hero-skills { display: grid; gap: 10px; }
     .hero-skill { display: grid; grid-template-columns: 42px 1fr; gap: 10px; align-items: center; }
     .hero-skill-icon { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--blue); border-radius: 8px; color: var(--blue); background: rgba(98, 183, 255, .13); font-size: 1.2rem; }
+    .pixel-icon { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+    .pixel-svg { width: 30px; height: 30px; shape-rendering: crispEdges; image-rendering: pixelated; }
     .hero-skill:nth-child(3) .hero-skill-icon { border-color: var(--purple); color: var(--purple); background: rgba(170, 130, 255, .14); }
     .hero-skill small { display: block; color: var(--muted); font-size: .64rem; letter-spacing: .08em; }
     .hero-skill strong { display: block; margin-top: 3px; font-family: 'Orbitron', sans-serif; font-size: .8rem; }
@@ -71,6 +73,7 @@
     .rarity-box b { color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: .68rem; }
     .rare-label { align-self: center; padding: 10px 12px; border: 1px solid var(--purple); border-radius: 4px; background: rgba(170, 130, 255, .14); color: var(--purple); font-family: 'Orbitron', sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .1em; box-shadow: 0 0 18px rgba(170, 130, 255, .2); }
     .main-character-label { display: inline-grid; gap: 10px; margin-top: 34px; padding: 12px 16px; border: 1px solid var(--blue); border-radius: 4px; background: rgba(98, 183, 255, .12); color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: .78rem; font-weight: 700; letter-spacing: .08em; box-shadow: 0 0 18px rgba(98, 183, 255, .2); }
+    .main-character-label > span { color: var(--blue); font-size: 1.35rem; letter-spacing: .16em; line-height: 1; text-shadow: 0 0 14px rgba(98, 183, 255, .7); }
     .main-character-label strong { color: var(--ink); font-size: 1.08rem; letter-spacing: .14em; }
     .legendary-label { display: inline-flex; align-items: center; margin-top: 22px; padding: 9px 14px; border: 1px solid #f5d76e; border-radius: 4px; background: rgba(245, 215, 110, .14); color: #f5d76e; font-family: 'Orbitron', sans-serif; font-size: .78rem; font-weight: 700; letter-spacing: .12em; box-shadow: 0 0 20px rgba(245, 215, 110, .22); }
     .rarity { display: flex; gap: 12px; align-items: center; margin-top: 16px; color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: .72rem; letter-spacing: .08em; }
@@ -91,7 +94,7 @@
     .button:hover { transform: translateY(-3px); }
     .button.primary { background: var(--blue); color: #080a0d; }
     .button.secondary { background: transparent; }
-    .portrait-wrap { position: relative; max-width: 410px; justify-self: end; }
+    .portrait-wrap { position: relative; max-width: 410px; justify-self: end; transform: translateY(-42px); }
     .portrait-wrap::before { content: ''; position: absolute; inset: 22px -20px -20px 22px; border: 2px solid var(--ink); border-radius: 48% 52% 45% 55%; transform: rotate(8deg); }
     .portrait { position: relative; display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 48% 52% 45% 55%; filter: saturate(.85); }
     .sticker { position: absolute; right: -25px; top: 28px; display: grid; place-items: center; width: 96px; height: 96px; padding: 12px; border-radius: 50%; background: var(--purple); color: white; font-size: .78rem; font-weight: 700; text-align: center; transform: rotate(12deg); }
@@ -99,6 +102,7 @@
     .section { padding-top: 105px; padding-bottom: 105px; border-top: 1px solid var(--line); }
     .section-heading { display: flex; justify-content: space-between; gap: 40px; align-items: end; margin-bottom: 48px; }
     h2 { max-width: 560px; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: .98; }
+    .section-heading h2 { max-width: none; white-space: nowrap; font-size: clamp(1.8rem, 3.8vw, 3.5rem); }
     .section-label { color: var(--blue); font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em; }
     .about-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
     .about-card { padding: 30px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; }
@@ -113,7 +117,7 @@
     .ability-meta { display: block; color: var(--muted); font-family: 'Orbitron', sans-serif; font-size: .68rem; letter-spacing: .1em; }
     .ability h4 { margin: 8px 0 6px; font-family: 'Orbitron', sans-serif; font-size: .95rem; }
     .ability p { font-size: .88rem; line-height: 1.5; }
-    .ability-icon { display: grid; place-items: center; width: 54px; height: 54px; margin-bottom: 14px; border: 1px solid var(--blue); border-radius: 10px; background: rgba(98, 183, 255, .14); color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: 1.5rem; }
+    .ability-icon { display: grid; place-items: center; width: 54px; height: 54px; margin-bottom: 14px; border: 1px solid var(--blue); border-radius: 10px; background: rgba(98, 183, 255, .14); color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: 1.5rem; overflow: hidden; }
     .ability:nth-child(2) .ability-icon { border-color: var(--blue); background: rgba(98, 183, 255, .14); color: var(--blue); }
     .ability:nth-child(3) .ability-icon { border-color: var(--purple); background: rgba(170, 130, 255, .14); color: var(--purple); }
     .ability-glyph { display: none; }
@@ -121,6 +125,12 @@
     .ultimate-ribbon { position: absolute; top: 12px; right: 12px; padding: 5px 7px; border-radius: 4px; background: var(--purple); color: #080a0d; font-family: 'Orbitron', sans-serif; font-size: .62rem; font-weight: 700; letter-spacing: .08em; }
     .ability:nth-child(2) .ability-glyph { background: var(--purple); color: white; }
     .ability:nth-child(3) .ability-glyph { background: var(--coral); color: #080a0d; }
+    .inventory-card { margin-top: 24px; }
+    .inventory-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 24px; }
+    .inventory-item { min-width: 0; padding: 14px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(98, 183, 255, .06); text-align: center; }
+    .inventory-icon { display: grid; place-items: center; width: 54px; height: 54px; margin: 0 auto 10px; font-size: 1.8rem; }
+    .inventory-item small { display: block; min-height: 2.5em; color: var(--muted); font-size: .68rem; line-height: 1.3; }
+    .inventory-item strong { display: block; margin-top: 6px; color: var(--blue); font-family: 'Orbitron', sans-serif; font-size: .7rem; }
     .contact { display: grid; grid-template-columns: 1.1fr .9fr; gap: 7vw; align-items: center; }
     .contact-copy { color: var(--muted); line-height: 1.7; max-width: 440px; }
     .contact-list { display: grid; gap: 12px; }
@@ -135,10 +145,12 @@
       .hero { padding-top: 35px; }
       .portrait-wrap { width: 78%; justify-self: center; margin-top: 18px; }
       .section-heading { display: block; }
+      .section-heading h2 { white-space: normal; }
       .section-label { display: block; margin-bottom: 18px; }
       .about-grid { grid-template-columns: 1fr; }
       .ability-list { grid-template-columns: 1fr; }
       .profile-panel { grid-template-columns: 1fr; }
+      .inventory-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .footer { display: block; line-height: 1.7; }
     }
   </style>
@@ -169,31 +181,31 @@
             <div className="sticker">Main character<br />energy</div>
             <div className="portrait-label">Player one</div>
           </div>
-            <div className="hero-panel">
-              <div className="character-line"><span>LVL 09</span><span>CLASS: CREATIVE DEV</span><span className="rare-label">RARE</span></div>
-              <h1>nieyrinn</h1>
-              <div className="main-character-label"><span>★★★★★</span><strong>5-STAR MAIN CHARACTER</strong></div>
-              <div className="legendary-label">LEGENDARY CHARACTER</div>
-              <div className="hero-tabs"><span className="active">PROFILE</span><span>ABILITY</span><span>TRANSCEND</span></div>
-              <div className="profile-panel">
-                <div className="profile-stats" aria-label="Character stats">
-                  <div className="profile-stat"><span>Creativity</span><strong>98</strong></div>
-                  <div className="profile-stat"><span>Curiosity</span><strong>100</strong></div>
-                  <div className="profile-stat"><span>Sleep</span><strong>404</strong></div>
-                  <div className="profile-stat"><span>Good vibes</span><strong>+10</strong></div>
-                </div>
-                <div className="hero-skills" aria-label="Equipped abilities">
-                  <div className="hero-skill"><span className="hero-skill-icon">✦</span><div><small>PASSIVE</small><strong>Touch Grass</strong></div></div>
-                  <div className="hero-skill"><span className="hero-skill-icon">◈</span><div><small>ACTIVE</small><strong>Pixel Vision</strong></div></div>
-                  <div className="hero-skill"><span className="hero-skill-icon">⚡</span><div><small>ULTIMATE</small><strong>Ship It</strong></div></div>
-                </div>
+          <div className="hero-panel">
+            <div className="character-line"><span>LVL 09</span><span>CLASS: CREATIVE DEV</span><span className="rare-label">RARE</span></div>
+            <h1>nieyrinn</h1>
+            <div className="main-character-label"><span aria-label="Five pixel stars">★★★★★</span><strong>5-STAR MAIN CHARACTER</strong></div>
+            <div className="legendary-label">LEGENDARY</div>
+            <div className="hero-tabs"><span className="active">PROFILE</span><span>ABILITY</span><span>TRANSCEND</span></div>
+            <div className="profile-panel">
+              <div className="profile-stats" aria-label="Character stats">
+                <div className="profile-stat"><span>Creativity</span><strong>98</strong></div>
+                <div className="profile-stat"><span>Curiosity</span><strong>100</strong></div>
+                <div className="profile-stat"><span>Sleep</span><strong>404</strong></div>
+                <div className="profile-stat"><span>Good vibes</span><strong>+10</strong></div>
               </div>
-              <p className="hero-copy">A creative developer with a cracked curiosity build, high imagination stats and one mission: make the web feel less NPC.</p>
-              <div className="hero-actions">
-                <a className="button primary" href="#about">Get the lore</a>
-                <a className="button secondary" href="#contact">Slide in</a>
+              <div className="hero-skills" aria-label="Equipped abilities">
+                <div className="hero-skill"><span className="hero-skill-icon"><img className="pixel-icon" src="grass.svg" alt="Pixel grass icon" /></span><div><small>PASSIVE / CRYO</small><strong>Touch Grass</strong></div></div>
+                <div className="hero-skill"><span className="hero-skill-icon"><img className="pixel-icon" src="vision.svg" alt="Pixel eye icon" /></span><div><small>ACTIVE / GEO</small><strong>Pixel Vision</strong></div></div>
+                <div className="hero-skill"><span className="hero-skill-icon"><img className="pixel-icon" src="star.svg" alt="Pixel star icon" /></span><div><small>ULTIMATE</small><strong>Ship It</strong></div></div>
               </div>
             </div>
+            <p className="hero-copy">A creative developer with a cracked curiosity build, high imagination stats and one mission: make the web feel less NPC.</p>
+            <div className="hero-actions">
+              <a className="button primary" href="#about">Get the lore</a>
+              <a className="button secondary" href="#contact">Slide in</a>
+            </div>
+          </div>
         </section>
       );
     }
@@ -202,23 +214,29 @@
       return (
         <section className="section" id="about">
           <div className="section-heading">
-            <div className="section-label">01 / The lore</div>
-            <h2>A maxed-out build with questionable sleep stats.</h2>
+            <div className="section-label">01 / Loadout</div>
+            <h2>ABILITY LOADOUT</h2>
           </div>
           <div className="about-grid">
             <article className="about-card">
               <h3>Ability loadout</h3>
               <p>Three abilities currently equipped in the nieyrinn build.</p>
               <div className="ability-list">
-                <div className="ability"><span className="ability-icon" aria-hidden="true">✦</span><span className="ability-meta">SKILL 01 / PASSIVE</span><h4>Touch Grass</h4><p>Restores focus and gives +10 real-life XP.</p></div>
-                <div className="ability"><span className="ability-icon" aria-hidden="true">◈</span><span className="ability-meta">SKILL 02 / ACTIVE</span><h4>Pixel Vision</h4><p>Spots tiny UI details other players completely miss.</p></div>
-                <div className="ability ultimate"><span className="ultimate-ribbon">ULTIMATE</span><span className="ability-icon" aria-hidden="true">⚡</span><span className="ability-meta">FULL POWER / FINAL MOVE</span><h4>Ship It</h4><p>Turns chaotic ideas into a clean playable experience.</p></div>
+                <div className="ability"><span className="ability-icon"><img className="pixel-icon" src="grass.svg" alt="Pixel grass icon" /></span><span className="ability-meta">SKILL 01 / CRYO PASSIVE</span><h4>Touch Grass</h4><p>Restores focus and gives +10 real-life XP.</p></div>
+                <div className="ability"><span className="ability-icon"><img className="pixel-icon" src="vision.svg" alt="Pixel eye icon" /></span><span className="ability-meta">SKILL 02 / GEO ACTIVE</span><h4>Pixel Vision</h4><p>Spots tiny UI details other players completely miss.</p></div>
+                <div className="ability ultimate"><span className="ultimate-ribbon">ULTIMATE</span><span className="ability-icon"><img className="pixel-icon" src="star.svg" alt="Pixel star icon" /></span><span className="ability-meta">FULL POWER / FINAL MOVE</span><h4>Ship It</h4><p>Turns chaotic ideas into a clean playable experience.</p></div>
               </div>
             </article>
-            <article className="about-card">
-              <h3>Build notes</h3>
-              <p>Rare class: creative developer. Strong against boring layouts, weak against low battery and no snacks.</p>
-              <div className="tags"><span className="tag">Creative</span><span className="tag">Reliable</span><span className="tag">+10 Good Vibes</span></div>
+            <article className="about-card inventory-card">
+              <h3>Build inventory</h3>
+              <p>Essential items equipped for the daily creative survival run.</p>
+              <div className="inventory-list" aria-label="Character inventory">
+                <div className="inventory-item"><span className="inventory-icon"><img className="pixel-icon" src="laptop.svg" alt="Pixel laptop icon" /></span><small>MacBook Air M2</small><strong>+40 CODE</strong></div>
+                <div className="inventory-item"><span className="inventory-icon"><img className="pixel-icon" src="death-note.svg" alt="Pixel notebook icon" /></span><small>Death Note</small><strong>+25 IDEAS</strong></div>
+                <div className="inventory-item"><span className="inventory-icon"><img className="pixel-icon" src="sleep.svg" alt="Pixel sleep icon" /></span><small>3 hours sleep</small><strong>-10 ENERGY</strong></div>
+                <div className="inventory-item"><span className="inventory-icon"><img className="pixel-icon" src="sandwich.svg" alt="Pixel sandwich icon" /></span><small>Sandwich in TB0</small><strong>+20 HP</strong></div>
+                <div className="inventory-item"><span className="inventory-icon"><img className="pixel-icon" src="coffee.svg" alt="Pixel coffee icon" /></span><small>TB0 coffee</small><strong>+50 FOCUS</strong></div>
+              </div>
             </article>
           </div>
         </section>
@@ -236,7 +254,7 @@
         <section className="section contact" id="contact">
           <div>
             <div className="section-label">02 / Contact</div>
-            <h2>Find me in the lobby.</h2>
+            <h2>Find me in the TB0 stadium.</h2>
             <p className="contact-copy">Send a party invite or drop a good vibe. These are public contact points only, no secret boss-room coordinates.</p>
           </div>
           <div className="contact-list">
