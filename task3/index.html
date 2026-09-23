@@ -47,6 +47,21 @@
       min-height: 610px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 7vw;
       align-items: center; padding-top: 58px; padding-bottom: 92px;
     }
+    .hero-panel { min-width: 0; }
+    .hero-panel .character-line { margin-top: 0; }
+    .hero-tabs { display: flex; gap: 0; margin: 28px 0 0; border-bottom: 1px solid var(--line); }
+    .hero-tabs span { padding: 12px 18px; color: var(--muted); font-family: 'Orbitron', sans-serif; font-size: .68rem; letter-spacing: .1em; }
+    .hero-tabs span.active { color: var(--ink); border-bottom: 2px solid var(--blue); background: rgba(98, 183, 255, .1); }
+    .profile-panel { display: grid; grid-template-columns: 1fr 1.25fr; gap: 22px; margin-top: 18px; padding: 18px; border: 1px solid var(--line); background: rgba(18, 22, 28, .8); }
+    .profile-stats { display: grid; gap: 9px; align-content: start; }
+    .profile-stat { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .78rem; }
+    .profile-stat strong { color: var(--ink); font-family: 'Orbitron', sans-serif; }
+    .hero-skills { display: grid; gap: 10px; }
+    .hero-skill { display: grid; grid-template-columns: 42px 1fr; gap: 10px; align-items: center; }
+    .hero-skill-icon { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--blue); border-radius: 8px; color: var(--blue); background: rgba(98, 183, 255, .13); font-size: 1.2rem; }
+    .hero-skill:nth-child(3) .hero-skill-icon { border-color: var(--purple); color: var(--purple); background: rgba(170, 130, 255, .14); }
+    .hero-skill small { display: block; color: var(--muted); font-size: .64rem; letter-spacing: .08em; }
+    .hero-skill strong { display: block; margin-top: 3px; font-family: 'Orbitron', sans-serif; font-size: .8rem; }
     .eyebrow { display: inline-flex; gap: 9px; align-items: center; color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .12em; }
     .eyebrow::before { content: ''; width: 34px; height: 3px; background: var(--blue); }
     .character-line { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; color: var(--purple); font-size: .75rem; font-weight: 700; letter-spacing: .1em; }
@@ -123,6 +138,7 @@
       .section-label { display: block; margin-bottom: 18px; }
       .about-grid { grid-template-columns: 1fr; }
       .ability-list { grid-template-columns: 1fr; }
+      .profile-panel { grid-template-columns: 1fr; }
       .footer { display: block; line-height: 1.7; }
     }
   </style>
@@ -148,27 +164,36 @@
     function Hero() {
       return (
         <section className="hero" id="top">
-          <div>
-            <div className="character-line"><span>LVL 09</span><span>CLASS: CREATIVE DEV</span><span className="rare-label">RARE</span></div>
-            <h1>nieyrinn</h1>
-            <div className="main-character-label"><span>★★★★★</span><strong>5-STAR MAIN CHARACTER</strong></div>
-            <div className="legendary-label">LEGENDARY CHARACTER</div>
-            <p className="hero-copy">A creative developer with a cracked curiosity build, high imagination stats and one mission: make the web feel less NPC.</p>
-            <div className="character-stats" aria-label="Character stats">
-              <div className="stat"><span className="stat-label">Creativity</span><strong className="stat-value">98%</strong></div>
-              <div className="stat"><span className="stat-label">Curiosity</span><strong className="stat-value">100%</strong></div>
-              <div className="stat"><span className="stat-label">Sleep</span><strong className="stat-value">404</strong></div>
-            </div>
-            <div className="hero-actions">
-              <a className="button primary" href="#about">Get the lore</a>
-              <a className="button secondary" href="#contact">Slide in</a>
-            </div>
-          </div>
           <div className="portrait-wrap">
             <img className="portrait" src="avatar.jpg" alt="nieyrinn portrait" onError={(event) => { event.currentTarget.src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85'; }} />
             <div className="sticker">Main character<br />energy</div>
             <div className="portrait-label">Player one</div>
           </div>
+            <div className="hero-panel">
+              <div className="character-line"><span>LVL 09</span><span>CLASS: CREATIVE DEV</span><span className="rare-label">RARE</span></div>
+              <h1>nieyrinn</h1>
+              <div className="main-character-label"><span>★★★★★</span><strong>5-STAR MAIN CHARACTER</strong></div>
+              <div className="legendary-label">LEGENDARY CHARACTER</div>
+              <div className="hero-tabs"><span className="active">PROFILE</span><span>ABILITY</span><span>TRANSCEND</span></div>
+              <div className="profile-panel">
+                <div className="profile-stats" aria-label="Character stats">
+                  <div className="profile-stat"><span>Creativity</span><strong>98</strong></div>
+                  <div className="profile-stat"><span>Curiosity</span><strong>100</strong></div>
+                  <div className="profile-stat"><span>Sleep</span><strong>404</strong></div>
+                  <div className="profile-stat"><span>Good vibes</span><strong>+10</strong></div>
+                </div>
+                <div className="hero-skills" aria-label="Equipped abilities">
+                  <div className="hero-skill"><span className="hero-skill-icon">✦</span><div><small>PASSIVE</small><strong>Touch Grass</strong></div></div>
+                  <div className="hero-skill"><span className="hero-skill-icon">◈</span><div><small>ACTIVE</small><strong>Pixel Vision</strong></div></div>
+                  <div className="hero-skill"><span className="hero-skill-icon">⚡</span><div><small>ULTIMATE</small><strong>Ship It</strong></div></div>
+                </div>
+              </div>
+              <p className="hero-copy">A creative developer with a cracked curiosity build, high imagination stats and one mission: make the web feel less NPC.</p>
+              <div className="hero-actions">
+                <a className="button primary" href="#about">Get the lore</a>
+                <a className="button secondary" href="#contact">Slide in</a>
+              </div>
+            </div>
         </section>
       );
     }
