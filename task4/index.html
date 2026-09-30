@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>task 4</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; max-width: 700px; margin: 0 auto; padding: 16px; }
+    .box { border: 1px solid #444; border-radius: 8px; padding: 12px; margin: 16px 0; }
+    button { margin: 4px; padding: 6px 12px; cursor: pointer; }
+    input { margin: 4px; padding: 4px; }
+    .hint { color: #999; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // counter
+    function Counter({ name }) {
+      const [count, setCount] = useState(0);
+      console.log('render Counter', name);
+      return (
+        <div>
+          <b>{name}</b>: {count}{' '}
+          <button onClick={() => setCount(count + 1)}>+1</button>
+        </div>
+      );
+    }
+
+    // 1
+    function RerenderDemo() {
+      const [clicks, setClicks] = useState(0);
+      console.log('render RerenderDemo');
+      return (
+        <div className="box">
+          <h3>1. rerender</h3>
+          <button onClick={() => setClicks(clicks + 1)}>parent: {clicks}</button>
+          <Counter name="child" />
+          <p className="hint">check console</p>
+        </div>
+      );
+    }
+
+    // 2
+    function PreserveResetDemo() {
+      const [isAigerim, setIsAigerim] = useState(true);
+      const [showB, setShowB] = useState(true);
+      return (
+        <div className="box">
+          <h3>2. state</h3>
+          <button onClick={() => setIsAigerim(!isAigerim)}>swap</button>
+
+          <p>no key</p>
+          {isAigerim ? <Counter name="Aigerim" /> : <Counter name="Zhasulan" />}
+
+          <p>with key</p>
+          {isAigerim ? <Counter key="aigerim" name="Aigerim" /> : <Counter key="zhasulan" name="Zhasulan" />}
+
+          <p>hide/show</p>
+          <button onClick={() => setShowB(!showB)}>{showB ? 'hide' : 'show'}</button>
+          {showB && <Counter name="temp" />}
+        </div>
+      );
+    }
+
+    // 3
+    function KeysDemo() {
+      const [items, setItems] = useState([
+        { id: 1, text: 'shawarma' },
+        { id: 2, text: 'baursak' },
+      ]);
+      const [nextId, setNextId] = useState(3);
+
+      function addToTop() {
+        setItems([{ id: nextId, text: 'new ' + nextId }, ...items]);
+        setNextId(nextId + 1);
+      }
+
+      return (
+        <div className="box">
+          <h3>3. keys</h3>
+          <button onClick={addToTop}>add on top</button>
+          <p className="hint">type smth then add</p>
+
+          <p>key=index</p>
+          {items.map((item, index) => (
+            <div key={index}>{item.text} <input /></div>
+          ))}
+
+          <p>key=id</p>
+          {items.map((item) => (
+            <div key={item.id}>{item.text} <input /></div>
+          ))}
+        </div>
+      );
+    }
+
+    function App() {
+      return (
+        <div>
+          <h1>task 4</h1>
+          <RerenderDemo />
+          <PreserveResetDemo />
+          <KeysDemo />
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
