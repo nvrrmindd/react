@@ -12,10 +12,6 @@ function App() {
         <About />
         <Contact />
       </main>
-      <footer className="footer">
-        <span>Designed and built with React.</span>
-        <span>© 2026 nieyrinn</span>
-      </footer>
     </div>
   );
 }
