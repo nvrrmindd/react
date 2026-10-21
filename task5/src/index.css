@@ -5,8 +5,8 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background: #0f1117;
-  color: #eee;
+  background: #fff;
+  color: #000;
 }
 
 .app {
@@ -15,34 +15,27 @@ body {
   padding: 24px 16px;
 }
 
-h1 {
-  color: #62b7ff;
-}
-
 h2 {
   margin-top: 0;
 }
 
 button {
   padding: 8px 14px;
-  border: 1px solid #333a48;
-  border-radius: 8px;
-  background: #1b1f2a;
-  color: #eee;
+  border: 1px solid #000;
+  border-radius: 6px;
+  background: #fff;
+  color: #000;
   cursor: pointer;
 }
 
 button:hover:not(:disabled) {
-  border-color: #62b7ff;
+  background: #000;
+  color: #fff;
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
-}
-
-button.danger {
-  color: #ff7b7b;
 }
 
 input,
@@ -50,10 +43,10 @@ select,
 textarea {
   width: 100%;
   padding: 8px;
-  border: 1px solid #333a48;
-  border-radius: 8px;
-  background: #1b1f2a;
-  color: #eee;
+  border: 1px solid #000;
+  border-radius: 6px;
+  background: #fff;
+  color: #000;
   font: inherit;
 }
 
@@ -83,9 +76,8 @@ textarea {
 
 .panel {
   padding: 16px;
-  border: 1px solid #333a48;
-  border-radius: 10px;
-  background: #161a23;
+  border: 1px solid #000;
+  border-radius: 8px;
   min-height: 200px;
 }
 
@@ -95,22 +87,27 @@ textarea {
   gap: 4px;
   padding: 10px;
   margin-bottom: 8px;
-  border: 1px solid #333a48;
-  border-radius: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   cursor: pointer;
 }
 
 .item:hover {
-  border-color: #62b7ff;
+  border-color: #000;
 }
 
 .item.selected {
-  border-color: #62b7ff;
-  background: #1d2533;
+  background: #000;
+  color: #fff;
+}
+
+.item.selected .muted {
+  color: #ccc;
 }
 
 .badge {
   margin-left: auto;
+  font-size: 12px;
 }
 
 .form {
@@ -123,25 +120,21 @@ textarea {
 }
 
 .muted {
-  color: #888;
+  color: #666;
 }
 
 .error {
-  color: #ff7b7b;
+  font-weight: bold;
 }
 
 .msg {
   padding: 10px;
   margin-bottom: 16px;
-  border-radius: 8px;
-}
-
-.msg.ok {
-  background: #1d3a26;
-  color: #6be08a;
+  border: 1px solid #000;
+  border-radius: 6px;
 }
 
 .msg.error {
-  background: #3a1d1d;
-  color: #ff7b7b;
+  background: #000;
+  color: #fff;
 }

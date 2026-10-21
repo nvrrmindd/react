@@ -33,7 +33,7 @@ export default function BookForm({ initial, busy, onSave, onCancel }) {
       <input name="pages" type="number" placeholder="Pages" value={form.pages} onChange={change} />
       <select name="rating" value={form.rating} onChange={change}>
         {[1, 2, 3, 4, 5].map((n) => (
-          <option key={n} value={n}>{'★'.repeat(n)}</option>
+          <option key={n} value={n}>{n} / 5</option>
         ))}
       </select>
       <textarea name="description" placeholder="Description" value={form.description} onChange={change} />

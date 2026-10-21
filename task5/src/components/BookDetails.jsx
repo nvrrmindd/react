@@ -6,8 +6,8 @@ export default function BookDetails({ book, busy, onToggle, onEdit, onDelete }) 
       <p><b>Genre:</b> {book.genre || '—'}</p>
       <p><b>Year:</b> {book.year || '—'}</p>
       <p><b>Pages:</b> {book.pages || '—'}</p>
-      <p><b>Rating:</b> {'★'.repeat(book.rating)}</p>
-      <p><b>Status:</b> {book.available ? '✅ Available' : '📕 Borrowed'}</p>
+      <p><b>Rating:</b> {book.rating} / 5</p>
+      <p><b>Status:</b> {book.available ? 'Available' : 'Borrowed'}</p>
       <p><b>Description:</b> {book.description || '—'}</p>
       <p className="muted">Last updated: {book.updatedAt}</p>
 

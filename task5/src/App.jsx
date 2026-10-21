@@ -150,14 +150,14 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1>📚 Book Library</h1>
+      <h1>Book Library</h1>
 
       <div className="row">
         <button onClick={() => setReloadKey((k) => k + 1)} disabled={listStatus === 'loading'}>
-          🔄 Reload
+          Reload
         </button>
         <button onClick={() => setFormMode('create')} disabled={busy}>
-          ➕ Add book
+          Add book
         </button>
       </div>
 
@@ -170,7 +170,7 @@ export default function App() {
 
           {listStatus === 'error' && (
             <div className="error">
-              <p>❌ {listError}</p>
+              <p>{listError}</p>
               <button onClick={() => setReloadKey((k) => k + 1)}>Try again</button>
             </div>
           )}
@@ -186,7 +186,7 @@ export default function App() {
               >
                 <b>{b.title}</b>
                 <span className="muted"> — {b.author}</span>
-                <span className="badge">{b.available ? '✅' : '📕'}</span>
+                <span className="badge">{b.available ? 'Available' : 'Borrowed'}</span>
               </div>
             ))}
         </div>
@@ -209,7 +209,7 @@ export default function App() {
 
               {selectedId !== null && detailsStatus === 'error' && (
                 <div className="error">
-                  <p>❌ {detailsError}</p>
+                  <p>{detailsError}</p>
                   <button onClick={() => setDetailsKey((k) => k + 1)}>Try again</button>
                 </div>
               )}
