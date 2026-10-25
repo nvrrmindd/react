@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp index.html me.html"
+    "build": "vite build && mkdir -p dist && sed s+\\./assets/+../assets/+g index.html > dist/index.html && cp index.html me.html"
   },
   "dependencies": {
     "react": "^19.3.0",
