@@ -150,7 +150,7 @@ document.getElementById("runConcurrent")
         const p2 = runOneTask(task2, 1);
         const p3 = runOneTask(task3, 2);
         await Promise.all([p1, p2, p3]);
-        await Promise.resolve(p1,p3);
+        // await Promise.resolve(p1,p3);
         const totalTime = Date.now() - start;
         document.getElementById("result").innerHTML =
             `Concurrent execution: ${totalTime} ms`;

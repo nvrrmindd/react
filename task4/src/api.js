@@ -1,14 +1,9 @@
-// Fake API: Promises + random delay + random errors + localStorage.
-// Components never touch localStorage directly — only through these functions.
-
 const KEY = 'books';
-
 const seed = [
   { id: 1, title: 'The Hobbit', author: 'J. R. R. Tolkien', genre: 'Fantasy', year: 1937, pages: 310, rating: 5, description: 'Bilbo goes on an unexpected journey.', available: true, updatedAt: '2026-10-01' },
   { id: 2, title: '1984', author: 'George Orwell', genre: 'Dystopia', year: 1949, pages: 328, rating: 5, description: 'Big Brother is watching you.', available: false, updatedAt: '2026-10-01' },
   { id: 3, title: 'Clean Code', author: 'Robert C. Martin', genre: 'Programming', year: 2008, pages: 464, rating: 4, description: 'How to write readable code.', available: true, updatedAt: '2026-10-01' },
 ];
-
 function load() {
   const saved = localStorage.getItem(KEY);
   if (saved) return JSON.parse(saved);
@@ -24,7 +19,6 @@ function today() {
   return new Date().toLocaleString();
 }
 
-// Wraps any work in a Promise with a random delay (0.5–2.5s) and a 15% chance of failure
 function fakeRequest(work) {
   return new Promise((resolve, reject) => {
     const delay = 500 + Math.random() * 2000;

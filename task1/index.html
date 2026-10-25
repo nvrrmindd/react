@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Runtime Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>JavaScript Runtime & Async</h1>
+
+        <div class="buttons">
+            <button id="runAll">Run All Tasks</button>
+            <button id="runSequential">Run Sequential</button>
+            <button id="runConcurrent">Run Concurrent</button>
+            <button id="runEventLoop">Run Event Loop Demo</button>
+        </div>
+
+        <h2>Tasks</h2>
+
+        <div id="tasks"></div>
+
+        <div id="result"></div>
+
+        <h2>Event Loop Demo</h2>
+
+        <p>
+            Open the browser console with
+            <b>F12 → Console</b>
+            to see the output.
+        </p>
+
+        <div class="expected">
+            <h3>Expected output:</h3>
+            <pre>
+Start
+Async start
+Promise 1
+Promise 2
+Async end
+Timer 1
+Timer 2
+            </pre>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
