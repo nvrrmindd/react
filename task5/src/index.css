@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #000;
+  color: #fff;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+button {
+  padding: 8px 14px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #fff;
+  color: #000;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  font: inherit;
+}
+
+textarea {
+  min-height: 70px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* phones: one column */
+@media (max-width: 650px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  padding: 16px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #111;
+  min-height: 200px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.item:hover {
+  border-color: #888;
+}
+
+.item.selected {
+  background: #fff;
+  color: #000;
+}
+
+.item.selected .muted {
+  color: #555;
+}
+
+.badge {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.form {
+  display: grid;
+  gap: 8px;
+}
+
+.details p {
+  margin: 6px 0;
+}
+
+.muted {
+  color: #888;
+}
+
+.error {
+  font-weight: bold;
+}
+
+.msg {
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #1a1a1a;
+}
+
+.msg.error {
+  background: #fff;
+  color: #000;
+}

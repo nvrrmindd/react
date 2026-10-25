@@ -1,11 +1,12 @@
 {
-  "name": "task2",
+  "name": "task5",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp index.html me.html"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.3.0",
