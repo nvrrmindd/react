@@ -1,0 +1,107 @@
+import { generateJobs } from './data'
+
+const JOBS_KEY = 'ai-era-jobs'
+const FEEDBACK_KEY = 'ai-era-feedback'
+const riskOrder = { Low: 1, Medium: 2, High: 3 }
+
+function loadJobs() {
+  const saved = localStorage.getItem(JOBS_KEY)
+  if (saved) return JSON.parse(saved)
+  const jobs = generateJobs(120)
+  localStorage.setItem(JOBS_KEY, JSON.stringify(jobs))
+  return jobs
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function maybeFail() {
+  if (Math.random() < 0.05) throw new Error('Network error. Please try again.')
+}
+
+// GET /jobs?search=&level=&aiRisk=&remoteOnly=&sort=&page=&pageSize=
+export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, pageSize }) {
+  await delay(400 + Math.random() * 600)
+  maybeFail()
+
+  let jobs = loadJobs()
+  const q = search.trim().toLowerCase()
+  if (q) {
+    jobs = jobs.filter((j) =>
+      [j.title, j.company, ...j.skills].some((s) => s.toLowerCase().includes(q))
+    )
+  }
+  if (level !== 'All') jobs = jobs.filter((j) => j.level === level)
+  if (aiRisk !== 'All') jobs = jobs.filter((j) => j.aiRisk === aiRisk)
+  if (remoteOnly) jobs = jobs.filter((j) => j.city === 'Remote')
+
+  jobs = [...jobs].sort((a, b) => {
+    if (sort === 'salary-desc') return b.salary - a.salary
+    if (sort === 'salary-asc') return a.salary - b.salary
+    if (sort === 'risk-asc') return riskOrder[a.aiRisk] - riskOrder[b.aiRisk]
+    return b.postedAt.localeCompare(a.postedAt) || b.id - a.id
+  })
+
+  const total = jobs.length
+  const items = jobs.slice((page - 1) * pageSize, page * pageSize)
+  return { items, total }
+}
+
+// GET /jobs/all (for the dashboard)
+export async function getAllJobs() {
+  await delay(400 + Math.random() * 400)
+  maybeFail()
+  return loadJobs()
+}
+
+// GET /jobs/:id
+export async function getJob(id) {
+  await delay(300 + Math.random() * 700)
+  maybeFail()
+  const job = loadJobs().find((j) => j.id === id)
+  if (!job) {
+    const error = new Error(`Job #${id} not found`)
+    error.status = 404
+    throw error
+  }
+  return job
+}
+
+// POST /jobs
+export async function createJob(data) {
+  await delay(500)
+  maybeFail()
+  const jobs = loadJobs()
+  const job = {
+    ...data,
+    id: Math.max(...jobs.map((j) => j.id)) + 1,
+    postedAt: new Date().toISOString().slice(0, 10),
+  }
+  localStorage.setItem(JOBS_KEY, JSON.stringify([job, ...jobs]))
+  return job
+}
+
+// GET /feedback
+export async function getFeedback() {
+  await delay(300)
+  return JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]')
+}
+
+// POST /feedback
+export async function createFeedback(data) {
+  await delay(500)
+  maybeFail()
+  const list = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]')
+  const item = { ...data, id: Date.now(), createdAt: new Date().toISOString().slice(0, 10) }
+  localStorage.setItem(FEEDBACK_KEY, JSON.stringify([item, ...list]))
+  return item
+}
+
+// Real public API: https://open.er-api.com (free, no key)
+export async function getExchangeRates() {
+  const res = await fetch('https://open.er-api.com/v6/latest/USD')
+  if (!res.ok) throw new Error(`Rates API error: ${res.status}`)
+  const data = await res.json()
+  return { rates: data.rates, updatedAt: data.time_last_update_utc }
+}
