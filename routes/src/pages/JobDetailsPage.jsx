@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import useExchangeRates from '../hooks/useExchangeRates'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { applyToJob, getJob } from '../services/service'
 import Badge from '../components/Badge'
@@ -12,6 +13,7 @@ const tips = {
 }
 
 export default function JobDetailsPage() {
+  const { data: ratesData } = useExchangeRates()
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -79,7 +81,15 @@ export default function JobDetailsPage() {
           <h1>{job.title}</h1>
           <Badge type={`risk-${job.aiRisk}`}>AI risk: {job.aiRisk}</Badge>
         </div>
-        <p className="salary big">${job.salary.toLocaleString()} / month</p>
+        <p className="salary big">
+          ${job.salary.toLocaleString()} / month
+          {ratesData?.rates?.KZT != null && (
+            <>
+              {' · '}
+              {Math.round(job.salary * ratesData.rates.KZT).toLocaleString('kk-KZ')} ₸ / ай
+            </>
+          )}
+        </p>
 
         <dl className="facts">
           <dt>Job ID</dt>
