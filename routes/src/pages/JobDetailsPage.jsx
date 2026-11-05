@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
-import { getJob } from '../services/service'
+import { applyToJob, getJob } from '../services/service'
 import Badge from '../components/Badge'
 import StatusMessage from '../components/StatusMessage'
 import CurrencyWidget from '../components/CurrencyWidget'
@@ -21,14 +21,15 @@ export default function JobDetailsPage() {
   const [job, setJob] = useState(null)
   const [error, setError] = useState(null)
   const [reloadKey, setReloadKey] = useState(0)
-  const [applied, setApplied] = useState(false)
+  const [applying, setApplying] = useState(false)
+  const [applyError, setApplyError] = useState(null)
 
   useEffect(() => {
     if (!isValidId) return
     let ignore = false
     setJob(null)
     setError(null)
-    setApplied(false)
+    setApplyError(null)
 
     getJob(jobId)
       .then((data) => {
@@ -42,6 +43,20 @@ export default function JobDetailsPage() {
       ignore = true
     }
   }, [jobId, isValidId, reloadKey])
+
+  async function handleApply() {
+    setApplying(true)
+    setApplyError(null)
+    try {
+      const appliedId = job.id
+      await applyToJob(appliedId)
+      setJob((prev) => (prev?.id === appliedId ? { ...prev, applied: true } : prev))
+    } catch (err) {
+      setApplyError(err.message)
+    } finally {
+      setApplying(false)
+    }
+  }
 
   function goBack() {
     if (location.key === 'default') navigate('/jobs')
@@ -102,9 +117,10 @@ export default function JobDetailsPage() {
 
         <div className={`tip risk-${job.aiRisk}`}>{tips[job.aiRisk]}</div>
 
-        <button className="btn" disabled={applied} onClick={() => setApplied(true)}>
-          {applied ? '✓ Application sent' : 'Apply now'}
+        <button className="btn" disabled={job.applied || applying} onClick={handleApply}>
+          {job.applied ? '✓ Application sent' : applying ? 'Sending…' : 'Apply now'}
         </button>
+        {applyError && <p className="error-text">{applyError}</p>}
 
         <CurrencyWidget amount={job.salary} />
       </div>

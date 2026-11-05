@@ -2,6 +2,7 @@ import { generateJobs } from './data'
 
 const JOBS_KEY = 'ai-era-jobs'
 const FEEDBACK_KEY = 'ai-era-feedback'
+const APPLIED_KEY = 'ai-era-applied'
 const riskOrder = { Low: 1, Medium: 2, High: 3 }
 
 function loadJobs() {
@@ -65,7 +66,18 @@ export async function getJob(id) {
     error.status = 404
     throw error
   }
-  return job
+  const appliedIds = JSON.parse(localStorage.getItem(APPLIED_KEY) || '[]')
+  return { ...job, applied: appliedIds.includes(id) }
+}
+
+// POST /jobs/:id/apply
+export async function applyToJob(id) {
+  await delay(400)
+  maybeFail()
+  const appliedIds = JSON.parse(localStorage.getItem(APPLIED_KEY) || '[]')
+  if (!appliedIds.includes(id)) {
+    localStorage.setItem(APPLIED_KEY, JSON.stringify([...appliedIds, id]))
+  }
 }
 
 // POST /jobs
