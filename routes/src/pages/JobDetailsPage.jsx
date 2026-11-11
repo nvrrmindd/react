@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
 import useExchangeRates from '../hooks/useExchangeRates'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
-import { applyToJob, getJob } from '../services/service'
+import { useApplyToJob, useJob } from '../hooks/useJobs'
 import Badge from '../components/Badge'
 import StatusMessage from '../components/StatusMessage'
 import CurrencyWidget from '../components/CurrencyWidget'
@@ -20,44 +19,13 @@ export default function JobDetailsPage() {
   const jobId = Number(id)
   const isValidId = Number.isInteger(jobId) && jobId > 0
 
-  const [job, setJob] = useState(null)
-  const [error, setError] = useState(null)
-  const [reloadKey, setReloadKey] = useState(0)
-  const [applying, setApplying] = useState(false)
-  const [applyError, setApplyError] = useState(null)
+  const { data: job, isPending, isError, error, refetch } = useJob(jobId, isValidId)
+  const applyMutation = useApplyToJob()
+  const applying = applyMutation.isPending
+  const applyError = applyMutation.error?.message
 
-  useEffect(() => {
-    if (!isValidId) return
-    let ignore = false
-    setJob(null)
-    setError(null)
-    setApplyError(null)
-
-    getJob(jobId)
-      .then((data) => {
-        if (!ignore) setJob(data)
-      })
-      .catch((err) => {
-        if (!ignore) setError(err)
-      })
-
-    return () => {
-      ignore = true
-    }
-  }, [jobId, isValidId, reloadKey])
-
-  async function handleApply() {
-    setApplying(true)
-    setApplyError(null)
-    try {
-      const appliedId = job.id
-      await applyToJob(appliedId)
-      setJob((prev) => (prev?.id === appliedId ? { ...prev, applied: true } : prev))
-    } catch (err) {
-      setApplyError(err.message)
-    } finally {
-      setApplying(false)
-    }
+  function handleApply() {
+    applyMutation.mutate(job.id)
   }
 
   function goBack() {
@@ -68,12 +36,12 @@ export default function JobDetailsPage() {
   let content
   if (!isValidId) {
     content = <StatusMessage type="error" text={`"${id}" is not a valid job ID.`} />
+  } else if (isPending) {
+    content = <StatusMessage type="loading" text="Loading job…" />
   } else if (error?.status === 404) {
     content = <StatusMessage type="empty" text={error.message} />
-  } else if (error) {
-    content = <StatusMessage type="error" text={error.message} onRetry={() => setReloadKey((k) => k + 1)} />
-  } else if (!job) {
-    content = <StatusMessage type="loading" text="Loading job…" />
+  } else if (isError) {
+    content = <StatusMessage type="error" text={error.message} onRetry={() => refetch()} />
   } else {
     content = (
       <div className="detail">

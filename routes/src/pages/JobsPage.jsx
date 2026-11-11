@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
-import { getJobs } from '../services/service'
+import { useJobs } from '../hooks/useJobs'
 import useJobFilters from '../hooks/useJobFilters'
 import Filters from '../components/Filters'
 import JobCard from '../components/JobCard'
@@ -14,42 +13,16 @@ export default function JobsPage() {
   const location = useLocation()
   const notice = location.state?.notice
 
-  const [jobs, setJobs] = useState([])
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [reloadKey, setReloadKey] = useState(0)
-
-  useEffect(() => {
-    let ignore = false
-    setLoading(true)
-    setError(null)
-
-    getJobs({ ...filters, pageSize: PAGE_SIZE })
-      .then((data) => {
-        if (ignore) return
-        setJobs(data.items)
-        setTotal(data.total)
-      })
-      .catch((err) => {
-        if (!ignore) setError(err.message)
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false)
-      })
-
-    return () => {
-      ignore = true
-    }
-  }, [filters, reloadKey])
-
+  const { data, isPending, isError, error, refetch } = useJobs({ ...filters, pageSize: PAGE_SIZE })
+  const jobs = data?.items ?? []
+  const total = data?.total ?? 0
   const totalPages = Math.ceil(total / PAGE_SIZE)
 
   let content
-  if (loading) {
+  if (isPending) {
     content = <StatusMessage type="loading" text="Loading vacancies…" />
-  } else if (error) {
-    content = <StatusMessage type="error" text={error} onRetry={() => setReloadKey((k) => k + 1)} />
+  } else if (isError) {
+    content = <StatusMessage type="error" text={error.message} onRetry={() => refetch()} />
   } else if (jobs.length === 0) {
     content = <StatusMessage type="empty" text="No vacancies match your filters. Try resetting them." />
   } else {

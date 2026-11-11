@@ -11,7 +11,7 @@ export default function JobCard({ job }) {
       <p className="muted">
         {job.company} · {job.city} · {job.level}
       </p>
-      <p className="salary">${job.salary.toLocaleString()} / month</p>
+      <p className="salary">${job.salary.toLocaleString()} / month  </p>
       <div className="tags">
         {job.skills.map((skill) => (
           <Badge key={skill}>{skill}</Badge>

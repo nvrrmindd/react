@@ -24,7 +24,6 @@ export default function CurrencyWidget({ amount = 1 }) {
               </li>
             ))}
           </ul>
-          <p className="muted small">Live data from open.er-api.com · updated {data.updatedAt}</p>
         </>
       )}
     </div>

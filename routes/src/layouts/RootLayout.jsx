@@ -18,7 +18,7 @@ export default function RootLayout() {
           <Outlet />
         </Suspense>
       </main>
-      <footer className="footer container muted small">AI Era Jobs · React Router homework</footer>
+      <footer className="footer container muted small">AI Era Jobs</footer>
     </div>
   )
 }

@@ -1,41 +1,156 @@
+# AI Era Jobs
 
-## Routes
+A job board for IT vacancies in the age of AI. Every vacancy shows its **AI risk** level and the AI tools the team uses.
 
-| URL | Page | Lazy |
-|---|---|---|
-| `/` | Home — intro, image, links, currency widget | |
-| `/about` | About the project | ✓ |
-| `/jobs` | Jobs list — search, filters, sort, pagination (all in URL) | |
-| `/jobs/:id` | Job details | ✓ |
-| `/jobs/new` | Post a job (form from the midterm) | ✓ |
-| `/dashboard` | Statistics | ✓ |
-| `/feedback` | Feedback form → localStorage (bonus) | ✓ |
-| `/login` | Login placeholder | ✓ |
-| `*` | 404 Not Found | ✓ |
+This project is the React Router homework, extended with **server data caching** (TanStack Query) and **Firebase Authentication**.
 
-## Bonus features
+- GitHub repository: https://github.com/nvrrmindd/react (folder `routes/`)
+- Live application: https://nvrrmindd.github.io/react/routes/dist/
 
-| Feature | Location |
+## Technologies
+
+- React 19 + Vite
+- React Router 8
+- TanStack Query 5 (server data and caching)
+- Firebase Authentication (Email/Password and Google)
+
+## Previous homework (still works)
+
+| URL | Page |
 |---|---|
-| Lazy loading of pages with `React.lazy` | `src/App.jsx` |
-| `Suspense` fallback while a lazy page loads | `src/layouts/RootLayout.jsx` |
-| Scroll to top on every route change | `src/layouts/RootLayout.jsx` |
-| Filters, search, sort and page stored in the URL (`useSearchParams`) | `src/hooks/useJobFilters.js`, `src/pages/JobsPage.jsx` |
-| Real public API — USD exchange rates (open.er-api.com) | `src/services/service.js` (`getExchangeRates`), `src/hooks/useExchangeRates.js` |
-| Currency widget (KZT, EUR, RUB, CNY) | `src/components/CurrencyWidget.jsx` — used on `src/pages/HomePage.jsx` and `src/pages/JobDetailsPage.jsx` |
-| Fake API: Promises, random delays, 5% network error, `localStorage` as a DB | `src/services/service.js` |
-| Retry button on load errors | `src/components/StatusMessage.jsx` — used on Jobs, Job details, Dashboard pages |
-| Dashboard with statistics and level filter | `src/pages/DashboardPage.jsx`, `src/components/StatCard.jsx`, `src/components/Breakdown.jsx` |
-| Feedback form with validation, saved to `localStorage` | `src/pages/FeedbackPage.jsx` |
-| Apply to a job (status saved in `localStorage`) | `src/pages/JobDetailsPage.jsx`, `src/services/service.js` (`applyToJob`) |
-| Prev / Next job navigation and smart "Back" button | `src/pages/JobDetailsPage.jsx` |
-| Invalid ID and 404 job handling | `src/pages/JobDetailsPage.jsx` |
-| Login page placeholder | `src/pages/LoginPage.jsx` |
-| 404 Not Found page | `src/pages/NotFoundPage.jsx` |
+| `/` | Home: intro, links, currency widget |
+| `/about` | About the project |
+| `/jobs` | Jobs list: search, filters, sort, pagination (all stored in the URL) |
+| `/jobs/:id` | Job details, "Apply" button, Prev / Next |
+| `/jobs/new` | Form to post a new job |
+| `/dashboard` | Statistics |
+| `/feedback` | Feedback form and reviews |
+| `*` | 404 page |
 
-### Bonus: salary in KZT
+Other features: lazy loading of pages (`React.lazy` + `Suspense`), a fake jobs API in `src/services/service.js` (Promises, random delay, 5% random error, `localStorage` as a database), and a real public API for exchange rates (open.er-api.com).
 
-On the job details page the salary is also shown in Kazakhstani tenge, converted with the live USD → KZT rate:
-`$3,000 / month · 1 500 000 ₸ / ай`
+## New assignment: what was added
 
-Location: `src/pages/JobDetailsPage.jsx` (salary block, uses `useExchangeRates`)
+| Requirement | How it is implemented |
+|---|---|
+| Firebase setup in a separate file | `src/services/firebase.js` reads the config from `VITE_` environment variables |
+| Environment variables | `.env.local` (not in Git) and `.env.example` (in Git) |
+| `AuthContext`, `AuthProvider`, `useAuth` | `src/context/AuthContext.jsx` |
+| Track the auth state | `onAuthStateChanged` inside `AuthProvider` |
+| Signup, login, Google sign-in, logout | functions `signup`, `login`, `loginWithGoogle`, `logout` in `AuthProvider` |
+| Loading and error states | `loading` in the context; `submitting` and `error` on the pages |
+| `/login` | `src/pages/LoginPage.jsx` |
+| `/signup` | `src/pages/SignupPage.jsx` (checks password length and password confirmation) |
+| `/profile` (protected) | `src/pages/ProfilePage.jsx` inside `src/components/ProtectedRoute.jsx` |
+| NavBar depends on the auth state | `src/components/NavBar.jsx` |
+| Server data caching | TanStack Query: `src/main.jsx`, `src/hooks/useJobs.js`, `src/hooks/useFeedback.js`, `src/hooks/useExchangeRates.js` |
+
+## Authentication
+
+- `AuthProvider` wraps the whole app (`src/main.jsx`). It keeps two values: `user` and `loading`.
+- Firebase calls `onAuthStateChanged` when the app starts and every time a user logs in or out. We save the user in state.
+- Firebase stores the session in the browser, so the user stays logged in after a page refresh.
+- Any component can call `useAuth()` to get `user`, `loading`, `signup`, `login`, `loginWithGoogle` and `logout`.
+- `ProtectedRoute` shows a loader while Firebase checks the session. If there is no user, it redirects to `/login`.
+- After a successful login or signup the user is redirected to `/profile`.
+- Firebase error codes are changed into simple messages, for example "Wrong email or password."
+
+## Firebase setup
+
+1. Open https://console.firebase.google.com and create a project.
+2. Go to **Build → Authentication → Get started**.
+3. On the **Sign-in method** tab enable **Email/Password** and **Google**.
+4. Go to **Project settings → General → Your apps**, add a **Web app** and copy the `firebaseConfig` values.
+5. Copy `.env.example` to `.env.local` and paste your values.
+6. Go to **Authentication → Settings → Authorized domains** and add the domain of the deployed site (for this project: `nvrrmindd.github.io`). `localhost` is already there.
+
+## Environment variables
+
+| Variable | Value from `firebaseConfig` |
+|---|---|
+| `VITE_FIREBASE_API_KEY` | `apiKey` |
+| `VITE_FIREBASE_AUTH_DOMAIN` | `authDomain` |
+| `VITE_FIREBASE_PROJECT_ID` | `projectId` |
+| `VITE_FIREBASE_STORAGE_BUCKET` | `storageBucket` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | `messagingSenderId` |
+| `VITE_FIREBASE_APP_ID` | `appId` |
+
+- Vite only gives the browser code variables that start with `VITE_`.
+- `.env.local` contains the real values and is listed in `.gitignore`, so it is never pushed.
+- `.env.example` contains only the variable names with placeholder values. It shows which variables are needed.
+
+## Install, run, build
+
+```bash
+cd routes
+npm install
+cp .env.example .env.local   # then put your Firebase values into .env.local
+npm run dev                  # run locally
+npm run build                # production build into dist/
+```
+
+## Caching strategy
+
+Server data is loaded and cached with **TanStack Query**. Pages do not call the API themselves: they use custom hooks, and the hooks call functions from `src/services/service.js`.
+
+### Which data is cached
+
+| Data | Hook | Query key |
+|---|---|---|
+| One page of the jobs list | `useJobs(filters)` | `['jobs', 'list', filters]` |
+| All jobs (dashboard) | `useAllJobs()` | `['jobs', 'all']` |
+| One job | `useJob(id)` | `['jobs', 'detail', id]` |
+| Reviews | `useFeedback()` | `['feedback']` |
+| Exchange rates (real API) | `useExchangeRates()` | `['rates', 'USD']` |
+
+The main cached resource is the **jobs list**.
+
+### How the query keys work
+
+A query key is the name of a cache entry. The key of the jobs list contains the `filters` object: `search`, `level`, `aiRisk`, `remoteOnly`, `sort`, `page` and `pageSize`. So every combination of filters and every page has its own cache entry, and different filters or pages never share data.
+
+### Cache configuration
+
+The defaults are set once in `src/main.jsx`:
+
+| Option | Value | Meaning |
+|---|---|---|
+| `staleTime` | 1 minute | Data is "fresh" for 1 minute. While it is fresh, opening the same page again makes **no** request. Vacancies do not change every second, so 1 minute is enough. |
+| `gcTime` | 5 minutes | When no page uses the data, it stays in memory for 5 more minutes and then it is deleted. This lets the user go back and still see the data at once. |
+| `retry` | `false` | An error is shown at once, with a "Try again" button. |
+
+Exchange rates use `staleTime` and `gcTime` of **1 hour**, because the API updates them only once a day.
+
+### When data is refetched
+
+- When the data is requested for the first time (a new query key).
+- When the data is older than `staleTime` and the page is opened again or the browser tab gets focus. The old data is shown at once and is updated in the background.
+- When the user clicks "Try again" after an error.
+- When the cache is invalidated (see below).
+
+### When the cache is invalidated
+
+| Action | What is invalidated | Why |
+|---|---|---|
+| A new job is posted (`useCreateJob`) | `['jobs']`: all job lists, the dashboard and job details | The new job must appear in the lists and statistics |
+| The user applies to a job (`useApplyToJob`) | `['jobs', 'detail', id]` | Only this job changed |
+| A review is sent (`useCreateFeedback`) | `['feedback']` | The new review must appear in the list |
+
+### Outdated requests
+
+TanStack Query gives every request an `AbortSignal`. The hooks pass it to the service functions. If the user changes a filter before the previous request finishes, the previous request is cancelled and its result is never saved. Also, every result is stored under its own query key, so an old answer cannot replace a new one.
+
+### Loading, error and empty states
+
+Every page shows a loader while data is loading, an error message with a "Try again" button if the request failed, and a text message if the list is empty.
+
+## Deployment
+
+The app is deployed with **GitHub Pages** from the `main` branch of the repository.
+
+1. Put the real Firebase values into `.env.local`.
+2. Run `npm run build` in the `routes` folder. It creates `dist/` and copies `dist/index.html` to `404.html` in the repository root. GitHub Pages opens `404.html` for unknown URLs, so React Router links such as `/jobs/5` also work after a page refresh.
+3. Commit and push. GitHub Pages publishes the site in about a minute.
+4. Add `nvrrmindd.github.io` to **Authorized domains** in Firebase, or Google sign-in will not work on the deployed site.
+
+The base path `/react/routes/dist/` is set in `vite.config.js`.

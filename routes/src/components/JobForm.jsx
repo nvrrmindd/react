@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createJob } from '../services/service'
+import { useCreateJob } from '../hooks/useJobs'
 
 const emptyForm = {
   title: '',
@@ -25,8 +25,9 @@ const toList = (text) => [
 export default function JobForm({ onCreated, onCancel }) {
   const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState({})
-  const [saving, setSaving] = useState(false)
-  const [submitError, setSubmitError] = useState(null)
+  const createJobMutation = useCreateJob()
+  const saving = createJobMutation.isPending
+  const submitError = createJobMutation.error?.message
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -42,31 +43,24 @@ export default function JobForm({ onCreated, onCancel }) {
     return errs
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault()
     const errs = validate()
     setErrors(errs)
     if (Object.keys(errs).length > 0) return
 
-    setSaving(true)
-    setSubmitError(null)
-    try {
-      const job = await createJob({
-        title: form.title.trim(),
-        company: form.company.trim(),
-        city: form.city,
-        level: form.level,
-        salary: Number(form.salary),
-        aiRisk: form.aiRisk,
-        skills: toList(form.skills),
-        aiTools: toList(form.aiTools),
-        description: form.description.trim() || 'No description provided.',
-      })
-      onCreated(job)
-    } catch (err) {
-      setSubmitError(err.message)
-      setSaving(false)
+    const newJob = {
+      title: form.title.trim(),
+      company: form.company.trim(),
+      city: form.city,
+      level: form.level,
+      salary: Number(form.salary),
+      aiRisk: form.aiRisk,
+      skills: toList(form.skills),
+      aiTools: toList(form.aiTools),
+      description: form.description.trim() || 'No description provided.',
     }
+    createJobMutation.mutate(newJob, { onSuccess: (job) => onCreated(job) })
   }
 
   return (

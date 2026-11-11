@@ -13,17 +13,19 @@ function loadJobs() {
   return jobs
 }
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+// Waits like a real network request. If the request was cancelled
+// while waiting (signal is aborted), it throws and no data is returned.
+async function delay(ms, signal) {
+  await new Promise((resolve) => setTimeout(resolve, ms))
+  signal?.throwIfAborted()
 }
 
 function maybeFail() {
   if (Math.random() < 0.05) throw new Error('Network error. Please try again.')
 }
 
-// GET /jobs?search=&level=&aiRisk=&remoteOnly=&sort=&page=&pageSize=
-export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, pageSize }) {
-  await delay(400 + Math.random() * 600)
+export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, pageSize }, signal) {
+  await delay(400 + Math.random() * 600, signal)
   maybeFail()
 
   let jobs = loadJobs()
@@ -49,16 +51,14 @@ export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, p
   return { items, total }
 }
 
-// GET /jobs/all (for the dashboard)
-export async function getAllJobs() {
-  await delay(400 + Math.random() * 400)
+export async function getAllJobs(signal) {
+  await delay(400 + Math.random() * 400, signal)
   maybeFail()
   return loadJobs()
 }
 
-// GET /jobs/:id
-export async function getJob(id) {
-  await delay(300 + Math.random() * 700)
+export async function getJob(id, signal) {
+  await delay(300 + Math.random() * 700, signal)
   maybeFail()
   const job = loadJobs().find((j) => j.id === id)
   if (!job) {
@@ -70,7 +70,6 @@ export async function getJob(id) {
   return { ...job, applied: appliedIds.includes(id) }
 }
 
-// POST /jobs/:id/apply
 export async function applyToJob(id) {
   await delay(400)
   maybeFail()
@@ -80,7 +79,6 @@ export async function applyToJob(id) {
   }
 }
 
-// POST /jobs
 export async function createJob(data) {
   await delay(500)
   maybeFail()
@@ -94,13 +92,11 @@ export async function createJob(data) {
   return job
 }
 
-// GET /feedback
-export async function getFeedback() {
-  await delay(300)
+export async function getFeedback(signal) {
+  await delay(300, signal)
   return JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]')
 }
 
-// POST /feedback
 export async function createFeedback(data) {
   await delay(500)
   maybeFail()
@@ -110,9 +106,8 @@ export async function createFeedback(data) {
   return item
 }
 
-// Real public API: https://open.er-api.com (free, no key)
-export async function getExchangeRates() {
-  const res = await fetch('https://open.er-api.com/v6/latest/USD')
+export async function getExchangeRates(signal) {
+  const res = await fetch('https://open.er-api.com/v6/latest/USD', { signal })
   if (!res.ok) throw new Error(`Rates API error: ${res.status}`)
   const data = await res.json()
   return { rates: data.rates, updatedAt: data.time_last_update_utc }

@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.107.1",
+    "firebase": "^13.2.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router": "^8.5.1"
