@@ -7,7 +7,7 @@ export default function CurrencyWidget({ amount = 1 }) {
 
   return (
     <div className="widget">
-      <h3>💱 USD exchange rates</h3>
+      <h3>USD exchange rates</h3>
       {loading && <p className="muted">Loading rates…</p>}
       {error && <p className="error-text">{error}</p>}
       {data && (

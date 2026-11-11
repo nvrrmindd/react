@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import heroImage from '../assets/hero.svg'
+import heroImage from '../assets/hero.jpg'
 import CurrencyWidget from '../components/CurrencyWidget'
 
 export default function HomePage() {
@@ -27,7 +27,7 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        <img src={heroImage} alt="A job card next to a friendly robot" className="home-image" />
+        <img src={heroImage} alt="A team of developers working on laptops" className="home-image" />
       </div>
       <CurrencyWidget amount={1000} />
     </section>
