@@ -1,5 +1,4 @@
 import { Link, NavLink } from 'react-router'
-import { useAuth } from '../context/AuthContext'
 
 const links = [
   { to: '/', label: 'Home', end: true },
@@ -11,8 +10,6 @@ const links = [
 ]
 
 export default function NavBar() {
-  const { user, logout } = useAuth()
-
   return (
     <header className="header">
       <div className="container header-inner">
@@ -25,25 +22,9 @@ export default function NavBar() {
               {link.label}
             </NavLink>
           ))}
-          {user ? (
-            <>
-              <NavLink to="/profile" className="nav-btn login">
-                Profile
-              </NavLink>
-              <button className="nav-btn login logout" onClick={logout}>
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <NavLink to="/login" className="nav-btn login">
-                Login
-              </NavLink>
-              <NavLink to="/signup" className="nav-btn login">
-                Signup
-              </NavLink>
-            </>
-          )}
+          <NavLink to="/login" className="nav-btn login">
+            Log in
+          </NavLink>
         </nav>
       </div>
     </header>

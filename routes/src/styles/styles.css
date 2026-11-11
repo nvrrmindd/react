@@ -97,8 +97,6 @@ main.container { padding-top: 24px; padding-bottom: 48px; }
 a { color: #a78bfa; }
 code { background: var(--surface); padding: 2px 6px; border-radius: 4px; }
 .nav-btn.login { border: 1px solid var(--border); }
-.nav-btn.logout { background: none; }
-.nav-btn.logout:hover { background: var(--border); }
 .footer { padding-top: 24px; padding-bottom: 24px; border-top: 1px solid var(--border); }
 .page-narrow { max-width: 720px; }
 .page-narrow li { margin-bottom: 6px; }
@@ -139,8 +137,6 @@ code { background: var(--surface); padding: 2px 6px; border-radius: 4px; }
 .auth-card { max-width: 420px; margin: 32px auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
 .auth-card h1 { margin-top: 0; }
 .auth-card .form { margin: 16px 0; }
-.auth-card .facts { grid-template-columns: 1fr; }
-.auth-card .facts dd { word-break: break-all; }
 
 .review { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
 .review p { margin: 8px 0 0; }

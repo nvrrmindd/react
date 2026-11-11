@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { useAllJobs } from '../hooks/useJobs'
+import { getAllJobs } from '../services/service'
 import StatCard from '../components/StatCard'
 import Breakdown from '../components/Breakdown'
 import StatusMessage from '../components/StatusMessage'
@@ -14,8 +14,32 @@ function countValues(values) {
 }
 
 export default function DashboardPage() {
-  const { data: jobs = [], isPending, isError, error, refetch } = useAllJobs()
+  const [jobs, setJobs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [reloadKey, setReloadKey] = useState(0)
   const [level, setLevel] = useState('All')
+
+  useEffect(() => {
+    let ignore = false
+    setLoading(true)
+    setError(null)
+
+    getAllJobs()
+      .then((data) => {
+        if (!ignore) setJobs(data)
+      })
+      .catch((err) => {
+        if (!ignore) setError(err.message)
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false)
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [reloadKey])
 
   const stats = useMemo(() => {
     const list = level === 'All' ? jobs : jobs.filter((j) => j.level === level)
@@ -35,8 +59,8 @@ export default function DashboardPage() {
 
   const levelParam = level === 'All' ? '' : `&level=${level}`
 
-  if (isPending) return <StatusMessage type="loading" text="Loading statistics…" />
-  if (isError) return <StatusMessage type="error" text={error.message} onRetry={() => refetch()} />
+  if (loading) return <StatusMessage type="loading" text="Loading statistics…" />
+  if (error) return <StatusMessage type="error" text={error} onRetry={() => setReloadKey((k) => k + 1)} />
   if (!stats) return <StatusMessage type="empty" text="No vacancies yet." />
 
   return (

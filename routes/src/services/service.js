@@ -13,19 +13,16 @@ function loadJobs() {
   return jobs
 }
 
-// Waits like a real network request. If the request was cancelled
-// while waiting (signal is aborted), it throws and no data is returned.
-async function delay(ms, signal) {
-  await new Promise((resolve) => setTimeout(resolve, ms))
-  signal?.throwIfAborted()
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function maybeFail() {
   if (Math.random() < 0.05) throw new Error('Network error. Please try again.')
 }
 
-export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, pageSize }, signal) {
-  await delay(400 + Math.random() * 600, signal)
+export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, pageSize }) {
+  await delay(400 + Math.random() * 600)
   maybeFail()
 
   let jobs = loadJobs()
@@ -51,14 +48,14 @@ export async function getJobs({ search, level, aiRisk, remoteOnly, sort, page, p
   return { items, total }
 }
 
-export async function getAllJobs(signal) {
-  await delay(400 + Math.random() * 400, signal)
+export async function getAllJobs() {
+  await delay(400 + Math.random() * 400)
   maybeFail()
   return loadJobs()
 }
 
-export async function getJob(id, signal) {
-  await delay(300 + Math.random() * 700, signal)
+export async function getJob(id) {
+  await delay(300 + Math.random() * 700)
   maybeFail()
   const job = loadJobs().find((j) => j.id === id)
   if (!job) {

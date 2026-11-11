@@ -1,47 +1,24 @@
 import { useState } from 'react'
-import { Link, Navigate } from 'react-router'
-import { getAuthErrorMessage, useAuth } from '../context/AuthContext'
+import { Link } from 'react-router'
 
 export default function LoginPage() {
-  const { user, login, loginWithGoogle } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-
-  // Already logged in (or just logged in) -> go to the profile
-  if (user) return <Navigate to="/profile" replace />
+  const [message, setMessage] = useState('')
 
   function handleChange(e) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault()
-    setError('')
-    setSubmitting(true)
-    try {
-      await login(form.email, form.password)
-    } catch (err) {
-      setError(getAuthErrorMessage(err))
-      setSubmitting(false)
-    }
-  }
-
-  async function handleGoogle() {
-    setError('')
-    setSubmitting(true)
-    try {
-      await loginWithGoogle()
-    } catch (err) {
-      setError(getAuthErrorMessage(err))
-      setSubmitting(false)
-    }
+    setMessage('Authentication is not ready yet. It will be added in a future version.')
   }
 
   return (
     <section className="auth-card">
       <h1>Log in</h1>
+      <p className="muted">Sign in to save vacancies and track your applications.</p>
       <form className="form" onSubmit={handleSubmit}>
         <label>
           Email
@@ -58,16 +35,13 @@ export default function LoginPage() {
             onChange={handleChange}
           />
         </label>
-        {error && <p className="error-text">{error}</p>}
-        <button type="submit" className="btn" disabled={submitting}>
-          {submitting ? 'Please wait…' : 'Log in'}
+        <button type="submit" className="btn">
+          Log in
         </button>
-        <button type="button" className="btn ghost" disabled={submitting} onClick={handleGoogle}>
-          Continue with Google
-        </button>
+        {message && <p className="notice">{message}</p>}
       </form>
       <p className="muted small">
-        No account yet? <Link to="/signup">Sign up</Link>
+        Just looking? <Link to="/jobs">Browse jobs without an account</Link>
       </p>
     </section>
   )
