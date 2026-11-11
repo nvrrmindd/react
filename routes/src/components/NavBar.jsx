@@ -11,7 +11,7 @@ const links = [
 ]
 
 export default function NavBar() {
-  const { user, loading, logout } = useAuth()
+  const { user, logout } = useAuth()
 
   return (
     <header className="header">
@@ -25,17 +25,7 @@ export default function NavBar() {
               {link.label}
             </NavLink>
           ))}
-          {!loading && !user && (
-            <>
-              <NavLink to="/login" className="nav-btn login">
-                Login
-              </NavLink>
-              <NavLink to="/signup" className="nav-btn login">
-                Signup
-              </NavLink>
-            </>
-          )}
-          {!loading && user && (
+          {user ? (
             <>
               <NavLink to="/profile" className="nav-btn login">
                 Profile
@@ -43,6 +33,15 @@ export default function NavBar() {
               <button className="nav-btn login logout" onClick={logout}>
                 Logout
               </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className="nav-btn login">
+                Login
+              </NavLink>
+              <NavLink to="/signup" className="nav-btn login">
+                Signup
+              </NavLink>
             </>
           )}
         </nav>

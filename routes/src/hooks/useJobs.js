@@ -1,13 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { applyToJob, createJob, getAllJobs, getJob, getJobs } from '../services/service'
 
-// Query keys. All of them start with 'jobs',
-// so invalidating ['jobs'] refreshes every jobs query at once.
-//   ['jobs', 'list', filters] - one page of the list for one set of filters
-//   ['jobs', 'all']           - all jobs (dashboard)
-//   ['jobs', 'detail', id]    - one job
+// All query keys start with 'jobs', so invalidating ['jobs'] refreshes all of them.
 
-// One page of jobs. filters contains search, level, aiRisk, remoteOnly, sort, page, pageSize.
+// One page of the list. filters = search, level, aiRisk, remoteOnly, sort, page, pageSize
 export function useJobs(filters) {
   return useQuery({
     queryKey: ['jobs', 'list', filters],
@@ -30,7 +26,7 @@ export function useJob(id, enabled) {
   })
 }
 
-// A new job changes the lists and the dashboard -> invalidate all jobs queries
+// After a change, all cached jobs data is old -> invalidate ['jobs']
 export function useCreateJob() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -39,11 +35,10 @@ export function useCreateJob() {
   })
 }
 
-// Applying changes only one job -> invalidate only this job
 export function useApplyToJob() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: applyToJob,
-    onSuccess: (data, id) => queryClient.invalidateQueries({ queryKey: ['jobs', 'detail', id] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['jobs'] }),
   })
 }

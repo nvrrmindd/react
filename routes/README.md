@@ -43,7 +43,7 @@ Other features: lazy loading of pages (`React.lazy` + `Suspense`), a fake jobs A
 | `/signup` | `src/pages/SignupPage.jsx` (checks password length and password confirmation) |
 | `/profile` (protected) | `src/pages/ProfilePage.jsx` inside `src/components/ProtectedRoute.jsx` |
 | NavBar depends on the auth state | `src/components/NavBar.jsx` |
-| Server data caching | TanStack Query: `src/main.jsx`, `src/hooks/useJobs.js`, `src/hooks/useFeedback.js`, `src/hooks/useExchangeRates.js` |
+| Server data caching | TanStack Query: `src/main.jsx`, `src/hooks/useJobs.js` |
 
 ## Authentication
 
@@ -95,15 +95,13 @@ Server data is loaded and cached with **TanStack Query**. Pages do not call the 
 
 ### Which data is cached
 
+The cached resource is **jobs**. It is the main data of the app: the list has filters and pagination, and there are real operations that change it (post a job, apply to a job). Feedback and exchange rates work as in the previous homework.
+
 | Data | Hook | Query key |
 |---|---|---|
 | One page of the jobs list | `useJobs(filters)` | `['jobs', 'list', filters]` |
 | All jobs (dashboard) | `useAllJobs()` | `['jobs', 'all']` |
 | One job | `useJob(id)` | `['jobs', 'detail', id]` |
-| Reviews | `useFeedback()` | `['feedback']` |
-| Exchange rates (real API) | `useExchangeRates()` | `['rates', 'USD']` |
-
-The main cached resource is the **jobs list**.
 
 ### How the query keys work
 
@@ -119,8 +117,6 @@ The defaults are set once in `src/main.jsx`:
 | `gcTime` | 5 minutes | When no page uses the data, it stays in memory for 5 more minutes and then it is deleted. This lets the user go back and still see the data at once. |
 | `retry` | `false` | An error is shown at once, with a "Try again" button. |
 
-Exchange rates use `staleTime` and `gcTime` of **1 hour**, because the API updates them only once a day.
-
 ### When data is refetched
 
 - When the data is requested for the first time (a new query key).
@@ -132,9 +128,10 @@ Exchange rates use `staleTime` and `gcTime` of **1 hour**, because the API updat
 
 | Action | What is invalidated | Why |
 |---|---|---|
-| A new job is posted (`useCreateJob`) | `['jobs']`: all job lists, the dashboard and job details | The new job must appear in the lists and statistics |
-| The user applies to a job (`useApplyToJob`) | `['jobs', 'detail', id]` | Only this job changed |
-| A review is sent (`useCreateFeedback`) | `['feedback']` | The new review must appear in the list |
+| A new job is posted (`useCreateJob`) | `['jobs']` | The new job must appear in the lists and statistics |
+| The user applies to a job (`useApplyToJob`) | `['jobs']` | The job must show "Application sent" |
+
+`['jobs']` is a prefix: it matches every key that starts with `'jobs'` (lists, dashboard, job details).
 
 ### Outdated requests
 
@@ -142,7 +139,7 @@ TanStack Query gives every request an `AbortSignal`. The hooks pass it to the se
 
 ### Loading, error and empty states
 
-Every page shows a loader while data is loading, an error message with a "Try again" button if the request failed, and a text message if the list is empty.
+Every jobs page shows a loader while data is loading, an error message with a "Try again" button if the request failed, and a text message if the list is empty.
 
 ## Deployment
 

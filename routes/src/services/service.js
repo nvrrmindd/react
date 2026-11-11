@@ -92,8 +92,8 @@ export async function createJob(data) {
   return job
 }
 
-export async function getFeedback(signal) {
-  await delay(300, signal)
+export async function getFeedback() {
+  await delay(300)
   return JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]')
 }
 
@@ -106,8 +106,8 @@ export async function createFeedback(data) {
   return item
 }
 
-export async function getExchangeRates(signal) {
-  const res = await fetch('https://open.er-api.com/v6/latest/USD', { signal })
+export async function getExchangeRates() {
+  const res = await fetch('https://open.er-api.com/v6/latest/USD')
   if (!res.ok) throw new Error(`Rates API error: ${res.status}`)
   const data = await res.json()
   return { rates: data.rates, updatedAt: data.time_last_update_utc }

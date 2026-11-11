@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useCreateFeedback, useFeedback } from '../hooks/useFeedback'
+import { useEffect, useState } from 'react'
+import { createFeedback, getFeedback } from '../services/service'
 import StatusMessage from '../components/StatusMessage'
 
 const emptyForm = { name: '', rating: '5', message: '' }
@@ -7,11 +7,20 @@ const emptyForm = { name: '', rating: '5', message: '' }
 export default function FeedbackPage() {
   const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState({})
+  const [saving, setSaving] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
   const [success, setSuccess] = useState(false)
-  const { data: reviews, isPending } = useFeedback()
-  const createFeedbackMutation = useCreateFeedback()
-  const saving = createFeedbackMutation.isPending
-  const submitError = createFeedbackMutation.error?.message
+  const [reviews, setReviews] = useState(null)
+
+  useEffect(() => {
+    let ignore = false
+    getFeedback().then((data) => {
+      if (!ignore) setReviews(data)
+    })
+    return () => {
+      ignore = true
+    }
+  }, [])
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -26,23 +35,28 @@ export default function FeedbackPage() {
     return errs
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const errs = validate()
     setErrors(errs)
     if (Object.keys(errs).length > 0) return
 
-    const review = {
-      name: form.name.trim(),
-      rating: Number(form.rating),
-      message: form.message.trim(),
+    setSaving(true)
+    setSubmitError(null)
+    try {
+      const item = await createFeedback({
+        name: form.name.trim(),
+        rating: Number(form.rating),
+        message: form.message.trim(),
+      })
+      setReviews((prev) => [item, ...prev])
+      setForm(emptyForm)
+      setSuccess(true)
+    } catch (err) {
+      setSubmitError(err.message)
+    } finally {
+      setSaving(false)
     }
-    createFeedbackMutation.mutate(review, {
-      onSuccess: () => {
-        setForm(emptyForm)
-        setSuccess(true)
-      },
-    })
   }
 
   return (
@@ -81,7 +95,7 @@ export default function FeedbackPage() {
       </form>
 
       <h2>Reviews</h2>
-      {isPending && <StatusMessage type="loading" text="Loading reviews…" />}
+      {reviews === null && <StatusMessage type="loading" text="Loading reviews…" />}
       {reviews?.length === 0 && <StatusMessage type="empty" text="No reviews yet. Be the first!" />}
       {reviews?.map((r) => (
         <article key={r.id} className="review">

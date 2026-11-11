@@ -1,16 +1,23 @@
-import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { getExchangeRates } from '../services/service'
 
-const ONE_HOUR = 60 * 60 * 1000
-
-// Exchange rates change once a day, so they stay fresh for a whole hour
 export default function useExchangeRates() {
-  const { data, error, isPending } = useQuery({
-    queryKey: ['rates', 'USD'],
-    queryFn: ({ signal }) => getExchangeRates(signal),
-    staleTime: ONE_HOUR,
-    gcTime: ONE_HOUR,
-  })
+  const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
 
-  return { data, error: error?.message, loading: isPending }
+  useEffect(() => {
+    let ignore = false
+    getExchangeRates()
+      .then((result) => {
+        if (!ignore) setData(result)
+      })
+      .catch((err) => {
+        if (!ignore) setError(err.message)
+      })
+    return () => {
+      ignore = true
+    }
+  }, [])
+
+  return { data, error, loading: !data && !error }
 }
