@@ -26,11 +26,9 @@ The build is written to `dist/`, under the GitHub Pages path used by this reposi
 
 ## PWA behavior
 
-- `public/manifest.webmanifest` identifies the installable app; the two PNG icons are in `public/icons/`.
-- The service worker code is in `sw-template.js`. The Vite build creates `dist/sw.js` from it and includes the built HTML, JavaScript, CSS, icons, manifest, and offline page in the install cache.
-- The service worker keeps versioned caches (version = build time), removes old versions on activation, and waits for the user to select **Update app** before activating an update.
-- Built assets and images use cache-first (max 60 entries). The public exchange-rate API uses network-first and keeps up to 20 responses. Firebase/authentication requests are not put in a shared runtime cache.
-- Jobs are generated and saved in local storage by the original app, so lists and details already work offline on that device. The top-of-page connectivity message explains when the app is offline; saved exchange rates show a separate cached-data message.
-- `/offline` is the app's offline route. Failed offline navigations show a separately precached retry page.
-- The navigation collapses to a touch-friendly menu on narrow screens.
-
+- `public/manifest.webmanifest` + icons in `public/icons/` make the app installable.
+- `public/sw.js` is the service worker: pre-caches the app shell, deletes old caches on activate (`VERSION`), shows an **Update** button for new versions.
+- Cache-first for own files (max 50), network-first for the exchange-rate API (max 20). Firebase/auth requests are never cached.
+- `/offline` page with **Retry connection**; Online/Offline indicator on every page.
+- Responsive menu and layout from 320px.
+- When deploying a new version, change `VERSION` in `public/sw.js`.
