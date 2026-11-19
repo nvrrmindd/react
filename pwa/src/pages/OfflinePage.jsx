@@ -1,26 +1,21 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
 
 export default function OfflinePage() {
-  const [checking, setChecking] = useState(false)
+  const navigate = useNavigate()
+  const [stillOffline, setStillOffline] = useState(false)
 
-  function retryConnection() {
-    setChecking(true)
-    window.location.reload()
+  function retry() {
+    if (navigator.onLine) navigate('/')
+    else setStillOffline(true)
   }
 
   return (
     <section className="offline-page">
       <h1>You are offline</h1>
-      <p className="muted">
-        The connection is unavailable. Saved vacancies and previously loaded public data remain available where possible.
-      </p>
-      <div className="home-links">
-        <button className="btn" type="button" onClick={retryConnection}>
-          {checking ? 'Checking…' : 'Retry connection'}
-        </button>
-        <Link className="btn ghost" to="/jobs">Open saved vacancies</Link>
-      </div>
+      <p className="muted">This page is not saved. Check your internet connection. Pages you opened before still work.</p>
+      <button className="btn" onClick={retry}>Retry connection</button>
+      {stillOffline && <p className="error-text">Still no connection.</p>}
     </section>
   )
 }

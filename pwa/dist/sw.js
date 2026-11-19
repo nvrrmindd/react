@@ -1,120 +1,102 @@
-// Service Worker. Vite fills in VERSION and PRECACHE during build (see vite.config.js).
-const VERSION = '1795028920283'
-const SHELL_CACHE = 'shell-' + VERSION // app shell: html, js, css, icons, offline page
-const STATIC_CACHE = 'static-' + VERSION // images / fonts (cache-first)
-const API_CACHE = 'api-' + VERSION // public API responses (network-first)
-const PAGES_CACHE = 'pages-' + VERSION // visited pages
-const ALL_CACHES = [SHELL_CACHE, STATIC_CACHE, API_CACHE, PAGES_CACHE]
-const PRECACHE = ["assets/index-Bh94RYQD.js","assets/hero-BexsMyCB.jpg","assets/index-DEp2wRlL.css","index.html","manifest.webmanifest","offline.html","icons/icon-192.png","icons/icon-512.png"]
-const API_HOST = 'open.er-api.com'
+const VERSION = 'v1'
+const SHELL = 'shell-' + VERSION
+const STATIC = 'static-' + VERSION
+const API = 'api-' + VERSION
+const PAGES = 'pages-' + VERSION
 
-const url = (path) => new URL(path, self.registration.scope).href
+const FILES = [
+  './',
+  'index.html',
+  'assets/index.js',
+  'assets/index.css',
+  'assets/hero.jpg',
+  'manifest.webmanifest',
+  'icons/icon-192.png',
+  'icons/icon-512.png',
+]
 
-// 1. install: download and save the app shell
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(PRECACHE.map(url))))
+  event.waitUntil(
+    caches.open(SHELL).then(async (cache) => {
+      await cache.addAll(FILES.map((file) => new Request(file, { cache: 'reload' })))
+      await cache.put('offline', await cache.match('index.html'))
+    })
+  )
 })
 
-// 2. activate: delete caches from old versions
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => !ALL_CACHES.includes(key)).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => !key.endsWith('-' + VERSION)).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   )
 })
 
-// messages from the app
 self.addEventListener('message', (event) => {
-  // user clicked "Update app"
-  if (event.data === 'SKIP_WAITING') self.skipWaiting()
-  // user opened a page inside the app -> remember it for offline
-  if (event.data?.type === 'CACHE_PAGE') event.waitUntil(cacheVisitedPage(event.data.url))
+  if (event.data === 'update') self.skipWaiting()
+  if (event.data.page) event.waitUntil(savePage(event.data.page))
 })
 
-// 3. fetch: choose a strategy for every request
 self.addEventListener('fetch', (event) => {
   const request = event.request
+  const url = new URL(request.url)
   if (request.method !== 'GET') return
-  const { origin, hostname } = new URL(request.url)
 
-  if (hostname === API_HOST) {
-    event.respondWith(networkFirst(request))
-  } else if (request.mode === 'navigate') {
-    event.respondWith(pageRequest(request))
-  } else if (origin === self.location.origin) {
-    event.respondWith(cacheFirst(request))
-  }
-  // everything else (Firebase auth, tokens, Google) goes to the network and is never cached
+  if (url.hostname === 'open.er-api.com') event.respondWith(networkFirst(request))
+  else if (request.mode === 'navigate') event.respondWith(openPage(request))
+  else if (url.origin === location.origin) event.respondWith(cacheFirst(request))
 })
 
-// Cache-first: images, icons, fonts, js, css
 async function cacheFirst(request) {
   const cached = await caches.match(request)
   if (cached) return cached
   try {
     const response = await fetch(request)
     if (response.ok) {
-      const cache = await caches.open(STATIC_CACHE)
+      const cache = await caches.open(STATIC)
       await cache.put(request, response.clone())
-      await trimCache(STATIC_CACHE, 60)
+      await trim(STATIC, 50)
     }
     return response
   } catch {
-    return new Response('', { status: 504 })
+    return Response.error()
   }
 }
 
-// Network-first: public API. Offline -> last saved answer
 async function networkFirst(request) {
-  const cache = await caches.open(API_CACHE)
+  const cache = await caches.open(API)
   try {
     const response = await fetch(request)
     if (response.ok) {
       await cache.put(request, response.clone())
-      await trimCache(API_CACHE, 20)
+      await trim(API, 20)
     }
     return response
   } catch {
     const cached = await cache.match(request)
-    if (!cached) {
-      return new Response(JSON.stringify({ error: 'offline' }), {
-        status: 503,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
-    // mark the answer so the app can show "cached data"
+    if (!cached) return Response.error()
     const headers = new Headers(cached.headers)
     headers.set('X-From-Cache', 'true')
-    return new Response(cached.body, { status: 200, headers })
+    return new Response(cached.body, { headers })
   }
 }
 
-// Pages: network-first. Offline -> visited page, otherwise the offline page
-async function pageRequest(request) {
+async function openPage(request) {
   try {
-    const response = await fetch(request)
-    // GitHub Pages answers 404 for app routes like /jobs/5 -> give the app shell
-    if (response.status === 404) return (await caches.match(url('index.html'))) || response
-    return response
+    return await fetch(request)
   } catch {
-    return (await caches.match(request.url, { cacheName: PAGES_CACHE }))
-      || (await caches.match(url('offline.html')))
+    return (await caches.match(request)) || Response.redirect('offline')
   }
 }
 
-async function cacheVisitedPage(pageUrl) {
-  if (!pageUrl.startsWith(self.registration.scope)) return
-  const shell = await caches.match(url('index.html'))
-  if (!shell) return
-  const cache = await caches.open(PAGES_CACHE)
-  await cache.put(pageUrl, shell)
-  await trimCache(PAGES_CACHE, 50)
+async function savePage(page) {
+  const cache = await caches.open(PAGES)
+  await cache.put(page, await caches.match('index.html'))
+  await trim(PAGES, 30)
 }
 
-// keep only the newest maxEntries items (no unlimited growth)
-async function trimCache(name, maxEntries) {
+async function trim(name, max) {
   const cache = await caches.open(name)
   const keys = await cache.keys()
-  for (const key of keys.slice(0, keys.length - maxEntries)) await cache.delete(key)
+  if (keys.length > max) await cache.delete(keys[0])
 }

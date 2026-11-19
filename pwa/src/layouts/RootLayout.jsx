@@ -7,11 +7,8 @@ export default function RootLayout() {
   const location = useLocation()
 
   useEffect(() => {
-    navigator.serviceWorker?.controller?.postMessage({
-      type: 'CACHE_PAGE',
-      url: window.location.href,
-    })
-  }, [location.pathname, location.search])
+    navigator.serviceWorker?.controller?.postMessage({ page: window.location.href })
+  }, [location])
 
   return (
     <div className="app">
