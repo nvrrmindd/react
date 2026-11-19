@@ -6,7 +6,9 @@
     <script>
       // GitHub Pages opens this file for every unknown URL (for example /react/auth/dist/profile).
       // We load the index.html of the right React app, and React Router shows the right page.
-      var app = location.pathname.indexOf('/react/auth/') === 0 ? '/react/auth/dist/' : '/react/routes/dist/'
+      var app = location.pathname.indexOf('/react/auth/') === 0 ? '/react/auth/dist/'
+        : location.pathname.indexOf('/react/pwa/') === 0 ? '/react/pwa/dist/'
+        : '/react/routes/dist/'
       fetch(app + 'index.html')
         .then(function (res) { return res.text() })
         .then(function (html) {
