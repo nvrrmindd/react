@@ -1,4 +1,4 @@
-const VERSION = 'v2'
+const VERSION = 'v3'
 const SHELL = 'shell-' + VERSION
 const STATIC = 'static-' + VERSION
 const API = 'api-' + VERSION

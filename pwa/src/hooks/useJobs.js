@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { applyToJob, createJob, getAllJobs, getJob, getJobs } from '../services/service'
+import { logAction } from '../services/logs'
 
 export function useJobs(filters) {
   return useQuery({
@@ -27,7 +28,10 @@ export function useCreateJob() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: createJob,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['jobs'] }),
+    onSuccess: (job) => {
+      logAction('create_job', { jobId: job.id, title: job.title })
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+    },
   })
 }
 
@@ -35,6 +39,9 @@ export function useApplyToJob() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: applyToJob,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['jobs'] }),
+    onSuccess: (_, jobId) => {
+      logAction('apply', { jobId })
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+    },
   })
 }

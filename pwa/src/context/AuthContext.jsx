@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, db, googleProvider } from '../services/firebase'
+import { logAction } from '../services/logs'
 
 function saveUser(user) {
   return setDoc(
@@ -51,19 +52,23 @@ export function AuthProvider({ children }) {
   async function signup(email, password) {
     const result = await createUserWithEmailAndPassword(auth, email, password)
     await saveUser(result.user)
+    logAction('signup')
   }
 
   async function login(email, password) {
     const result = await signInWithEmailAndPassword(auth, email, password)
     await saveUser(result.user)
+    logAction('login')
   }
 
   async function loginWithGoogle() {
     const result = await signInWithPopup(auth, googleProvider)
     await saveUser(result.user)
+    logAction('login_google')
   }
 
   function logout() {
+    logAction('logout')
     return signOut(auth)
   }
 
