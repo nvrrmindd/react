@@ -1,0 +1,23 @@
+{
+  "name": "AI Era Jobs",
+  "short_name": "AI Jobs",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#00106e",
+  "background_color": "#e6e6e6",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

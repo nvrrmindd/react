@@ -8,6 +8,7 @@
       // We load the index.html of the right React app, and React Router shows the right page.
       var app = location.pathname.indexOf('/react/auth/') === 0 ? '/react/auth/dist/'
         : location.pathname.indexOf('/react/pwa/') === 0 ? '/react/pwa/dist/'
+        : location.pathname.indexOf('/react/redux/') === 0 ? '/react/redux/dist/'
         : '/react/routes/dist/'
       fetch(app + 'index.html')
         .then(function (res) { return res.text() })
