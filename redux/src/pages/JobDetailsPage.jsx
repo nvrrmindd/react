@@ -45,10 +45,8 @@ export default function JobDetailsPage() {
     content = <StatusMessage type="error" text={`"${id}" is not a valid job ID.`} />
   } else if (status === 'idle' || status === 'loading' || (status === 'succeeded' && job.id !== jobId)) {
     content = <StatusMessage type="loading" text="Loading job…" />
-  } else if (error?.status === 404) {
-    content = <StatusMessage type="empty" text={error.message} />
   } else if (status === 'failed') {
-    content = <StatusMessage type="error" text={error.message} onRetry={() => refetch()} />
+    content = <StatusMessage type="error" text={error} onRetry={() => refetch()} />
   } else {
     content = (
       <div className="detail">

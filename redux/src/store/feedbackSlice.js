@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { createFeedback as createFeedbackApi, getFeedback } from '../services/service'
 
 export const fetchFeedback = createAsyncThunk('feedback/fetchFeedback', () => getFeedback(), {
-  condition: (_, { getState }) => getState().feedback.status === 'idle' || getState().feedback.status === 'failed',
+  condition: (_, { getState }) => getState().feedback.status !== 'succeeded',
 })
 
 export const createFeedback = createAsyncThunk('feedback/createFeedback', (data) => createFeedbackApi(data))

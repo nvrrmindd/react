@@ -32,8 +32,6 @@ const initialState = {
   all: { items: [], status: 'idle', error: null, requestId: null },
 }
 
-const isStale = (part, action) => action.meta.aborted || part.requestId !== action.meta.requestId
-
 const jobsSlice = createSlice({
   name: 'jobs',
   initialState,
@@ -47,13 +45,13 @@ const jobsSlice = createSlice({
         state.list.requestId = action.meta.requestId
       })
       .addCase(fetchJobs.fulfilled, (state, action) => {
-        if (isStale(state.list, action)) return
+        if (action.meta.requestId !== state.list.requestId) return
         state.list.status = 'succeeded'
         state.list.items = action.payload.items
         state.list.total = action.payload.total
       })
       .addCase(fetchJobs.rejected, (state, action) => {
-        if (isStale(state.list, action)) return
+        if (action.meta.requestId !== state.list.requestId) return
         state.list.status = 'failed'
         state.list.error = action.error.message
       })
@@ -63,12 +61,12 @@ const jobsSlice = createSlice({
         state.all.requestId = action.meta.requestId
       })
       .addCase(fetchAllJobs.fulfilled, (state, action) => {
-        if (isStale(state.all, action)) return
+        if (action.meta.requestId !== state.all.requestId) return
         state.all.status = 'succeeded'
         state.all.items = action.payload
       })
       .addCase(fetchAllJobs.rejected, (state, action) => {
-        if (isStale(state.all, action)) return
+        if (action.meta.requestId !== state.all.requestId) return
         state.all.status = 'failed'
         state.all.error = action.error.message
       })

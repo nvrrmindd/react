@@ -4,13 +4,7 @@ import { logAction } from '../services/logs'
 
 export const fetchJob = createAsyncThunk(
   'jobDetails/fetchJob',
-  async (id, { signal, rejectWithValue }) => {
-    try {
-      return await getJob(id, signal)
-    } catch (error) {
-      return rejectWithValue({ message: error.message, status: error.status })
-    }
-  },
+  (id, { signal }) => getJob(id, signal),
   {
     condition: (id, { getState }) => {
       const details = getState().jobDetails
@@ -45,9 +39,9 @@ const jobDetailsSlice = createSlice({
         state.job = action.payload
       })
       .addCase(fetchJob.rejected, (state, action) => {
-        if (action.meta.aborted || action.meta.requestId !== state.requestId) return
+        if (action.meta.requestId !== state.requestId) return
         state.status = 'failed'
-        state.error = action.payload ?? { message: action.error.message }
+        state.error = action.error.message
       })
       .addCase(applyToJob.fulfilled, (state, action) => {
         if (state.job?.id === action.payload) state.job.applied = true

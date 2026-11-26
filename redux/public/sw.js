@@ -1,4 +1,4 @@
-const VERSION = 'v1'
+const VERSION = 'v2'
 const SHELL = 'redux-shell-' + VERSION
 const STATIC = 'redux-static-' + VERSION
 const API = 'redux-api-' + VERSION
